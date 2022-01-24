@@ -3,17 +3,25 @@ package Arg
 import (
   "net"
   "fmt"
+  "strings"
+
   "github.com/jessehorne/tenland/data"
+  "github.com/jessehorne/tenland/commands"
 )
 
 func Handle(n int, buf [512]byte, conn net.Conn) {
+  // Split command
   cmd := string(buf[0:n-1])
-  if cmd == "exit" {
+  splitCmd := strings.Split(cmd, " ")
+
+  if splitCmd[0] == "exit" {
     Write([]byte(Data.Goodbye), conn)
     conn.Close()
     fmt.Println("[USER DISCONNECTED]", conn.LocalAddr().String())
-  } else if cmd == "help" {
+  } else if splitCmd[0] == "help" {
     WriteFull([]byte(Data.Help), conn)
+  } else if splitCmd[0] == "register" {
+    Command.RegisterCommandHandler(splitCmd, conn)
   } else {
     WriteFull([]byte(Data.UnknownCommand), conn)
   }

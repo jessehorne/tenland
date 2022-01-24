@@ -4,17 +4,10 @@ import (
   "fmt"
 
   "github.com/jessehorne/tenland/data"
-
-  "gorm.io/gorm"
+  "github.com/jessehorne/tenland/models"
 
   "github.com/joho/godotenv"
 )
-
-type User struct {
-  gorm.Model
-  Username string `gorm:"type:varchar(255);unique"`
-  Password string `gorm:"type:varchar(255)"`
-}
 
 func main() {
   // Environment Variables
@@ -29,5 +22,5 @@ func main() {
   Data.InitDB()
 
   // Migrate
-  Data.DB.AutoMigrate(&User{})
+  Data.DB.AutoMigrate(&Models.User{})
 }
