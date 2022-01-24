@@ -19,6 +19,12 @@ func main() {
     fmt.Println("[ERROR] Error loading .env file...")
   }
 
+  // Setup MySQL Database
+
+  Data.InitDB()
+  
+  fmt.Println("Database initialized...")
+
   // Set up server
   service := ":4000"
   tcpAddr, err := net.ResolveTCPAddr("tcp4", service)
