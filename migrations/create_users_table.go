@@ -22,5 +22,5 @@ func main() {
   Data.InitDB()
 
   // Migrate
-  Data.DB.AutoMigrate(&Models.User{})
+  Data.DB.AutoMigrate(&Model.User{})
 }

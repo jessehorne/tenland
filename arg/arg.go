@@ -18,12 +18,14 @@ func Handle(n int, buf [512]byte, conn net.Conn) {
     Write([]byte(Data.Goodbye), conn)
     conn.Close()
     fmt.Println("[USER DISCONNECTED]", conn.LocalAddr().String())
-  } else if splitCmd[0] == "help" {
-    WriteFull([]byte(Data.Help), conn)
-  } else if splitCmd[0] == "register" {
-    Command.RegisterCommandHandler(splitCmd, conn)
   } else {
-    WriteFull([]byte(Data.UnknownCommand), conn)
+    f, found := Command.Run[splitCmd[0]]
+
+    if found {
+      f.(Command.CommandType).Handler.(func([]string, net.Conn))(splitCmd, conn)
+    } else {
+      WriteFull([]byte(Data.UnknownCommand), conn)
+    }
   }
 }
 
