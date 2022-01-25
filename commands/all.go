@@ -3,6 +3,7 @@ package Command
 var Run = map[string]interface{}{
   "help": NewHelpCommand(),
   "register": NewRegisterCommand(),
+  "login": NewLoginCommand(),
 }
 
 type CommandType struct {

@@ -1,14 +1,13 @@
 package Command
 
 import (
-  "net"
-
   "github.com/jessehorne/tenland/data"
+  "github.com/jessehorne/tenland/game"
 )
 
-func HelpCommandHandler(cmd []string, conn net.Conn) {
-  conn.Write([]byte(Data.Help))
-  conn.Write([]byte(Data.Cursor))
+func HelpCommandHandler(cmd []string, session *Game.Session) {
+  session.Conn.Write([]byte(Data.Help))
+  session.Conn.Write([]byte(Data.Cursor))
 }
 
 func NewHelpCommand() CommandType {

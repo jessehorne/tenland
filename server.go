@@ -7,6 +7,7 @@ import (
 
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/arg"
+  "github.com/jessehorne/tenland/game"
 
   "github.com/joho/godotenv"
 )
@@ -22,7 +23,7 @@ func main() {
   // Setup MySQL Database
 
   Data.InitDB()
-  
+
   fmt.Println("Database initialized...")
 
   // Set up server
@@ -52,13 +53,18 @@ func handleClient(conn net.Conn) {
 
   var buf [512]byte
 
-  Arg.WriteFull([]byte(Data.Welcome), conn)
-
+  // Tell server user connected
   fmt.Println("[USER CONNECTED]", conn.LocalAddr().String())
 
+  // Give user welcome
+  Arg.WriteFull([]byte(Data.Welcome), conn)
+
+  // Create session
+  session := Game.NewSession(conn)
+
   for {
-    // // Output input line
-    // Arg.Cursor(conn)
+    // Session debug
+    fmt.Println("Session", session.Authed, session.IP)
 
     // Read input
     n, err := conn.Read(buf[0:])
@@ -68,7 +74,7 @@ func handleClient(conn net.Conn) {
     }
 
     // Compare input
-    Arg.Handle(n, buf, conn)
+    Arg.Handle(n, buf, &session)
 
   }
 }
