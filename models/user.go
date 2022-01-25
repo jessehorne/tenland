@@ -15,7 +15,7 @@ type User struct {
   Gold int `gorm:"type:int"`
 }
 
-func NewUser(username string, password string) User {
+func NewUser(username string, password string) (User, error) {
   hashedPassword, _ := HashPassword(password)
 
   u := User{
@@ -24,9 +24,13 @@ func NewUser(username string, password string) User {
     Gold: 100,
   }
 
-  Data.DB.Create(&u)
+  result := Data.DB.Create(&u)
 
-  return u
+  if result.Error != nil {
+    return u, result.Error
+  }
+
+  return u, nil
 }
 
 func HashPassword(password string) (string, error) {

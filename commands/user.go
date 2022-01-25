@@ -47,16 +47,26 @@ func RegisterCommandHandler(cmd []string, conn net.Conn) {
   err := validate.Struct(input)
 
   if err != nil {
-    fmt.Println("[REGISTER FAILURE (INVALID SYNTAX)]", conn.LocalAddr().String())
+    fmt.Println("[REGISTER FAILURE (VALIDATION ERROR)]", conn.LocalAddr().String())
     conn.Write([]byte("Error! Use the following syntax...\n"))
     conn.Write([]byte("/register <username> <password>\n"))
+    conn.Write([]byte("Your username must be unique and your password must be at least 8 characters.\n"))
     conn.Write([]byte(Data.Cursor))
     return
   }
 
   // Create user
-  Model.NewUser(cmd[1], cmd[2])
+  _, userCreationError := Model.NewUser(cmd[1], cmd[2])
 
+  if userCreationError != nil {
+    fmt.Println("[REGISTER FAILURE (CREATION ERROR)]", conn.LocalAddr().String())
+
+    conn.Write([]byte("I'm sorry, something went wrong.\n"))
+    conn.Write([]byte(userCreationError.Error()))
+    conn.Write([]byte(Data.Cursor))
+
+    return
+  }
 
   // Let user and server know registration was successful
   conn.Write([]byte("You've registered. Now do 'login <username> <password>'!\n"))
