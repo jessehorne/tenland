@@ -20,7 +20,10 @@ const Help =
 "You will learn about Tenland as you explore it. That's a part of the adventure.\n" +
 "Type 'begin' and go from there. Soon, you'll be an expert.\n"
 
-
 const Begin =
 "To begin, you need to register an account with us.\n" +
 "/register <username> <password>\n"
+
+const Abyss =
+"There is nothing around you except for a seemingly infinite stretch of grey.\n" +
+"You can see your body and you can walk along the platform. How did you get here?\n"
