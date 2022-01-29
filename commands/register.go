@@ -20,7 +20,7 @@ type RegisterUserInput struct {
 }
 
 func NewRegisterCommand() CommandType {
-  rc := NewCommand("register", "register <username> <password>")
+  rc := NewCommand("register", "'register <username> <password>' - Register new character.'")
   rc.Handler = RegisterCommandHandler
 
   return rc

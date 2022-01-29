@@ -20,7 +20,7 @@ type LoginInput struct {
 }
 
 func NewLoginCommand() CommandType {
-  c := NewCommand("login", "login <username> <password>")
+  c := NewCommand("login", "'login <username> <password>' - Log in as a character.'")
   c.Handler = LoginCommandHandler
 
   return c

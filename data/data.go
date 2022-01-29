@@ -18,7 +18,8 @@ const Help =
 "\n" +
 "I can't tell you everything there is to know about Tenland in this short blurb.\n" +
 "You will learn about Tenland as you explore it. That's a part of the adventure.\n" +
-"Type 'begin' and go from there. Soon, you'll be an expert.\n"
+"Type 'begin' and go from there. Soon, you'll be an expert.\n\n" +
+"Try 'commands' for a list of all available commands.\n"
 
 const Begin =
 "To begin, you need to register an account with us.\n" +

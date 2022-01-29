@@ -11,7 +11,7 @@ func HelpCommandHandler(cmd []string, session *Game.Session) {
 }
 
 func NewHelpCommand() CommandType {
-  hc := NewCommand("help", "help")
+  hc := NewCommand("help", "'help' - General helpful information.")
   hc.Handler = HelpCommandHandler
 
   return hc

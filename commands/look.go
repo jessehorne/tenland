@@ -32,7 +32,7 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
 }
 
 func NewLookCommand() CommandType {
-  c := NewCommand("look", "look")
+  c := NewCommand("look", "'look' - Get visual and auditory information on current room.")
   c.Handler = LookCommandHandler
 
   return c
