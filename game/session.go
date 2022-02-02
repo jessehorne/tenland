@@ -9,7 +9,8 @@ import (
 type Session struct {
   User Model.User
   Authed bool
-  Admin bool
+  IsAdmin bool
+  IsBuilder bool
   IP string
   Conn net.Conn
   X int
@@ -19,7 +20,8 @@ type Session struct {
 func NewSession(conn net.Conn) Session {
   newSession := Session{
     Authed: false,
-    Admin: false,
+    IsAdmin: false,
+    IsBuilder: false,
     IP: conn.LocalAddr().String(),
     Conn: conn,
     X: 0,
