@@ -1,30 +1,41 @@
 package Data
 
+import (
+  "github.com/jessehorne/tenland/colors"
+)
 
-const Cursor = "tl>"
+var Cursor = Colors.Blue("tl>")
 
-const Welcome =
-"Welcome to Tenland (v0.0.1). To get started, type 'begin' or 'help'.\n\n"
+var Welcome =
+Colors.Yellow("Welcome to Tenland (v0.0.1). To get started, type 'begin' or 'help'.\n\n")
 
-const Goodbye =
-"Thank you for playing Tenland. Come back soon! (press return)"
+var Goodbye =
+Colors.Yellow("Thank you for playing Tenland. Come back soon! (press return)")
 
-const UnknownCommand =
-"I'm sorry, I do not understand what you mean. Try 'commands'.\n\n"
+var UnknownCommand =
+Colors.Red("I'm sorry, I do not understand what you mean. Try 'commands'.\n\n")
 
-const Help =
-"Tenland is a multiplayer kingdom building game. You will work towards making\n" +
-"your kingdom stronger, building alliances and fighting enemies for dominance.\n" +
-"\n" +
-"I can't tell you everything there is to know about Tenland in this short blurb.\n" +
-"You will learn about Tenland as you explore it. That's a part of the adventure.\n" +
-"Type 'begin' and go from there. Soon, you'll be an expert.\n\n" +
-"Try 'commands' for a list of all available commands.\n"
+var Help =
+Colors.Yellow(`Tenland is a multiplayer text-based game.
+In Tenland, you start out as a ghost that can move around in the endless void
+of empty space. To begin playing you must 'register' and then 'login'. Try
+'help <command>' to get more information on commands. For example, type...
+'help register'.
+Once you're registered, you'll enter the world of Tenland. Tenland is a large
+circular island. There are different resources on different parts of the island.
+For a map of the island resources, type 'map'.
+Tenland itself can be played in a variety of ways. Some players choose to gain
+wealth in the form of Gold (type 'gold') while others choose to do PvP or build.
+Please note that Tenland is very new. There's not a ton of information out yet.
+Stay tuned and feel free to help by being active on the game, in the community
+and by contributing code.
+Try 'commands' for a list of all available commands.
+Type 'begin' to start.`)
 
-const Begin =
-"To begin, you need to register an account with us.\n" +
-"/register <username> <password>\n"
+var Begin =
+Colors.Yellow("To begin, you need to register an account with us.\n" +
+"register <username> <password>\n")
 
-const Abyss =
-"There is nothing around you except for a seemingly infinite stretch of grey.\n" +
-"You can see your body and you can walk along the platform. How did you get here?\n"
+var Abyss =
+Colors.Yellow("There is nothing around you except for a seemingly infinite stretch of grey.\n" +
+"You can see your body and you can walk along the platform. How did you get here?\n")

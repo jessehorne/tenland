@@ -34,6 +34,9 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
 func NewLookCommand() CommandType {
   c := NewCommand("look", "'look' - Get visual and auditory information on current room.")
   c.Handler = LookCommandHandler
+  c.Help =
+  "look\n" +
+  "Gives you a detailed description of the area you're current standing in.\n"
 
   return c
 }

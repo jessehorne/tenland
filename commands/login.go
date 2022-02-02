@@ -22,11 +22,21 @@ type LoginInput struct {
 func NewLoginCommand() CommandType {
   c := NewCommand("login", "'login <username> <password>' - Log in as a character.'")
   c.Handler = LoginCommandHandler
+  c.Help =
+  "login <username> <password>\n" +
+  "Attempts to log into the <username> account with the <password> credential.\n" +
+  "Example: 'login dock NotMyActualPassword'\n"
 
   return c
 }
 
 func LoginCommandHandler(cmd []string, session *Game.Session) {
+  if session.Authed {
+    session.Conn.Write([]byte("You can't do this while you're logged in.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
   // Validate length of command
   if len(cmd) != 3 {
     fmt.Println("[LOGIN FAILURE (INVALID COMMAND)]", session.IP)

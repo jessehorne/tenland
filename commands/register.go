@@ -22,11 +22,21 @@ type RegisterUserInput struct {
 func NewRegisterCommand() CommandType {
   rc := NewCommand("register", "'register <username> <password>' - Register new character.'")
   rc.Handler = RegisterCommandHandler
+  rc.Help =
+  "register <username> <password>\n" +
+  "Attempts to register the <username> account with the <password> credential.\n" +
+  "Example: 'register dock NotMyActualPassword'\n"
 
   return rc
 }
 
 func RegisterCommandHandler(cmd []string, session *Game.Session) {
+  if session.Authed {
+    session.Conn.Write([]byte("You can't do this while you're logged in.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
   // Validate length of command
   if len(cmd) != 3 {
     fmt.Println("[REGISTER FAILURE (INVALID COMMAND)]", session.IP)
@@ -56,7 +66,7 @@ func RegisterCommandHandler(cmd []string, session *Game.Session) {
   }
 
   // Create user
-  _, userCreationError := Model.NewUser(cmd[1], cmd[2])
+  _, userCreationError := Model.NewUser(Data.DB, cmd[1], cmd[2])
 
   if userCreationError != nil {
     fmt.Println("[REGISTER FAILURE (CREATION ERROR)]", session.IP)

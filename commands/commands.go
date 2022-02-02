@@ -23,6 +23,9 @@ func CommandsCommandHandler(cmd []string, session *Game.Session) {
 func NewCommandsCommand() CommandType {
   c := NewCommand("commands", "'commands' - Shows a list of all available commands.")
   c.Handler = CommandsCommandHandler
+  c.Help =
+  "commands\n" +
+  "Displays a list of all possible commands.\n"
 
   return c
 }

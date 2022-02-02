@@ -23,4 +23,6 @@ func main() {
 
   // Migrate
   Data.DB.AutoMigrate(&Model.User{})
+  Data.DB.AutoMigrate(&Model.Room{})
+  Data.DB.AutoMigrate(&Model.Config{})
 }

@@ -9,6 +9,7 @@ var Run = map[string]interface{}{
   "coords": NewCoordsCommand(),
   "look": NewLookCommand(),
   "commands": NewCommandsCommand(),
+  "begin": NewBeginCommand(),
 }
 
 type CommandType struct {

@@ -63,9 +63,6 @@ func handleClient(conn net.Conn) {
   session := Game.NewSession(conn)
 
   for {
-    // Session debug
-    fmt.Println("Session", session.Authed, session.IP)
-
     // Read input
     n, err := conn.Read(buf[0:])
 
