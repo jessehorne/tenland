@@ -8,8 +8,8 @@ import (
 
 func LookCommandHandler(cmd []string, session *Game.Session) {
   // Get users current position
-  x := session.X
-  y := session.Y
+  x := session.User.X
+  y := session.User.Y
 
   // Get room at current user position
   searchRoom := Model.Room{}

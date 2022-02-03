@@ -31,7 +31,7 @@ func BuildCommandHandler(cmd []string, session *Game.Session) {
   }
 
   // Verify that user is a builder
-  if !session.IsBuilder {
+  if !session.User.IsBuilder {
     session.Conn.Write([]byte("You're not a builder!\n"))
     session.Conn.Write([]byte(Data.Cursor))
     return
@@ -59,8 +59,8 @@ func BuildCommandHandler(cmd []string, session *Game.Session) {
   // Input is valid
 
   // Get user coordinates
-  x := session.X
-  y := session.Y
+  x := session.User.X
+  y := session.User.Y
 
   // Check if room exists
   searchRoom := Model.Room{}

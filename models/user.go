@@ -13,6 +13,8 @@ type User struct {
   Gold int `gorm:"type:int"`
   IsAdmin bool `gorm:"type:bool"`
   IsBuilder bool `gorm:"type:bool"`
+  X int `gorm:"type:int"`
+  Y int `gorm:"type:int"`
 }
 
 func NewUser(DB *gorm.DB, username string, password string) (User, error) {

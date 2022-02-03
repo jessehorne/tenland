@@ -7,7 +7,7 @@ import (
 )
 
 func CoordsCommandHandler(cmd []string, session *Game.Session) {
-  output := fmt.Sprintf("Coordinates (X, Y): (%d, %d)\n", session.X, session.Y)
+  output := fmt.Sprintf("Coordinates (X, Y): (%d, %d)\n", session.User.X, session.User.Y)
   session.Conn.Write([]byte(output))
   session.Conn.Write([]byte(Data.Cursor))
 }
