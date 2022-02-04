@@ -37,6 +37,9 @@ func main() {
 
   fmt.Println("Tenland v0.0.1 running on port 4000")
 
+  // Setup ticker
+  Game.StartTicker()
+
   for {
     conn, err := listener.Accept()
 
