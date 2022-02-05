@@ -10,6 +10,7 @@ type Room struct {
   Desc string `gorm:"type:text"`
   X int `gorm:"type:int"`
   Y int `gorm:"type:int"`
+  Exits string `gorm:"type:varchar(255)"`
 }
 
 func NewRoom(DB *gorm.DB, x int, y int, name string, desc string) (Room, error) {
@@ -18,6 +19,7 @@ func NewRoom(DB *gorm.DB, x int, y int, name string, desc string) (Room, error) 
     Desc: desc,
     X: x,
     Y: y,
+    Exits: "",
   }
 
   result := DB.Create(&r)

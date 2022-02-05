@@ -39,3 +39,6 @@ Colors.Yellow("To begin, you need to register an account with us.\n" +
 var Abyss =
 Colors.Yellow("There is nothing around you except for a seemingly infinite stretch of grey.\n" +
 "You can see your body and you can walk along the platform. How did you get here?\n")
+
+var InvalidMovement =
+Colors.Red("You can't go that way!\n")
