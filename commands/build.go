@@ -41,6 +41,108 @@ func CreateRoom(session *Game.Session) {
   }
 }
 
+// Manage room exits
+// Examples...
+// build exit add north
+// build exit remove north
+func ExitRoom(cmd []string, session *Game.Session) {
+  // len(cmd) should be at least 3
+  if len(cmd) < 3 {
+    session.Conn.Write([]byte("Invalid use of 'exit'. Missing arguments. Please type 'help build'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  which := cmd[1] // add or remove
+  direction := cmd[2] // north, south, east, west, etc
+
+  // Get users current position
+  x := session.User.X
+  y := session.User.Y
+
+  // Get room at current user position
+  searchRoom := Model.Room{}
+  result := Data.DB.Where(Model.Room{
+    X: x,
+    Y: y,
+  }).First(&searchRoom)
+
+  if result.RowsAffected == 0 {
+    session.Conn.Write([]byte("Invalid use of 'exit'. You can't set exits in the abyss. Please type 'help build'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  exits := strings.Split(searchRoom.Exits, ",")
+
+  if which == "add" {
+    // Loop over exits, if direction not found, then you can add it
+    found := false
+    for _, value := range exits {
+      if value == direction {
+        found = true
+        break
+      }
+    }
+
+    if found {
+      session.Conn.Write([]byte("Invalid use of 'exit'. That exit already exists. Please type 'help build'.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    } else {
+      // add exit and save
+      if searchRoom.Exits == "" {
+        searchRoom.Exits = direction
+      } else {
+        searchRoom.Exits = searchRoom.Exits + "," + direction
+      }
+
+      Data.DB.Save(&searchRoom)
+
+      session.Conn.Write([]byte("You've added an exit to the current room!\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+
+      return
+    }
+  } else if which == "remove" {
+    // Iterate over current room exits. If found, you can delete it
+    found := false
+    index := -1
+    for i, value := range exits {
+      if value == direction {
+        found = true
+        index = i
+      }
+    }
+
+    if found {
+      // delete exit
+      newExits := []string{}
+
+      newExits = append(newExits, exits[:index]...)
+      newExits = append(newExits, exits[index+1:]...)
+
+      searchRoom.Exits = strings.Join(newExits, ",")
+
+      Data.DB.Save(&searchRoom)
+
+      session.Conn.Write([]byte("You've removed an exit from the current room!\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+
+      return
+    } else {
+      session.Conn.Write([]byte("Invalid use of 'exit'. That exit doesn't exist in this room. Please type 'help build'.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    }
+
+  }
+
+  // If it gets here, means the user typed wrong command (not 'add' nor 'remove')
+  session.Conn.Write([]byte("Invalid use of 'exit'. Invalid option to 'exit'. Please type 'help build'.\n"))
+  session.Conn.Write([]byte(Data.Cursor))
+}
+
 // Used to set room variables such as 'title' and 'desc'
 func SetRoom(cmd []string, session *Game.Session) {
   // len(cmd) should be at least 3 (set, title OR desc, data) example: 'set title A Small Room'
@@ -117,11 +219,12 @@ func BuildCommandHandler(cmd []string, session *Game.Session) {
 
   if first == "set" {
     SetRoom(cmd[1:], session)
-
     return
   } else if first == "create" {
     CreateRoom(session)
-
+    return
+  } else if first == "exit" {
+    ExitRoom(cmd[1:], session)
     return
   }
 
