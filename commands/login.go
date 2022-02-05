@@ -96,6 +96,7 @@ func LoginCommandHandler(cmd []string, session *Game.Session) {
   session.Conn.Write([]byte(Data.Cursor))
 
   session.Authed = true
+  session.User = searchUser
 
   fmt.Printf("[LOGIN SUCCESS (FOR '%s')] %s\n", cmd[1], session.IP)
 }

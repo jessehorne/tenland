@@ -6,7 +6,7 @@ import (
 
 type Room struct {
   gorm.Model
-  Name string `gorm:"type:varchar(255)"`
+  Title string `gorm:"type:varchar(255)"`
   Desc string `gorm:"type:text"`
   X int `gorm:"type:int"`
   Y int `gorm:"type:int"`
@@ -15,7 +15,7 @@ type Room struct {
 
 func NewRoom(DB *gorm.DB, x int, y int, name string, desc string) (Room, error) {
   r := Room{
-    Name: name,
+    Title: name,
     Desc: desc,
     X: x,
     Y: y,

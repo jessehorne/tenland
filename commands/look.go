@@ -26,7 +26,7 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
   }
 
   // The room was found, print title, desc + exits
-  session.Conn.Write([]byte(searchRoom.Name + "\n"))
+  session.Conn.Write([]byte(searchRoom.Title + "\n"))
   session.Conn.Write([]byte(searchRoom.Desc + "\n\n"))
   session.Conn.Write([]byte(Data.Cursor))
 }

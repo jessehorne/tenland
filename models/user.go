@@ -24,8 +24,8 @@ func NewUser(DB *gorm.DB, username string, password string) (User, error) {
     Username: username,
     Password: hashedPassword,
     Gold: 100,
-    IsAdmin: false,
-    IsBuilder: false,
+    IsAdmin: true,
+    IsBuilder: true,
   }
 
   result := DB.Create(&u)
