@@ -20,7 +20,17 @@ func Handle(n int, buf [512]byte, session *Game.Session) {
     session.Conn.Close()
     fmt.Println("[USER DISCONNECTED]", session.IP)
   } else {
-    f, found := Command.Run[splitCmd[0]]
+    // Get closest match
+    match := Command.GetClosestMatch(splitCmd[0])
+
+    // No match found
+    if match == "" {
+      WriteFull([]byte(Data.UnknownCommand), session.Conn)
+      return
+    }
+
+    // Get command from Run map
+    f, found := Command.Run[match]
 
     if found {
       f.(Command.CommandType).Handler.(func([]string, *Game.Session))(splitCmd, session)
