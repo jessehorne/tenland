@@ -29,7 +29,7 @@ func CreateRoom(session *Game.Session) {
     return
   } else {
     // If it doesn't exist, create it
-    _, err := Model.NewRoom(Data.DB, x, y, "Construction Zone", "This room was just created and has no exits.")
+    _, err := Model.NewRoom(Data.DB, x, y, "Construction Zone", "This room is new and unfinished.")
 
     if err != nil {
       session.Conn.Write([]byte("Sorry! Something went wrong creating the room.\n"))
