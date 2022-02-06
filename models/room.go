@@ -13,6 +13,10 @@ type Room struct {
   Exits string `gorm:"type:varchar(255)"`
 }
 
+func GetUserSessionsInRoom(x int, y int) {
+
+}
+
 func NewRoom(DB *gorm.DB, x int, y int, name string, desc string) (Room, error) {
   r := Room{
     Title: name,

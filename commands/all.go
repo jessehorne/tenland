@@ -16,6 +16,7 @@ var Run = map[string]interface{}{
   "south": NewSouthCommand(),
   "east": NewEastCommand(),
   "west": NewWestCommand(),
+  "global": NewGlobalCommand(),
 }
 
 type CommandType struct {
