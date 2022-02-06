@@ -7,6 +7,14 @@ import (
 )
 
 func LookCommandHandler(cmd []string, session *Game.Session) {
+  // Make sure user is logged in
+  if !session.Authed {
+    session.Conn.Write([]byte("You see nothing. You have to be logged in to look around. Type 'help login' or 'help register'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+
+    return
+  }
+
   // Get users current position
   x := session.User.X
   y := session.User.Y

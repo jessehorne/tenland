@@ -29,7 +29,7 @@ func GlobalCommandHandler(cmd []string, session *Game.Session) {
   message := strings.Join(cmd[1:], " ")
 
   // Build packet
-  packet := Colors.Yellow("[Global] ") + Colors.Cyan(session.User.Username + ": " + message + "\n")
+  packet := "\n" + Colors.Yellow("[Global]") + Colors.Blue(" (player) ") + Colors.Cyan(session.User.Username + ": " + message + "\n")
 
   // Loop through all sessions and send message
   for _,val := range Game.Sessions {
