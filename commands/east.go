@@ -50,8 +50,8 @@ func EastCommandHandler(cmd []string, session *Game.Session) {
 func NewEastCommand() CommandType {
   hc := NewCommand("east", "'east' - Move your character east.")
   hc.Handler = EastCommandHandler
-  hc.Help =
-  "east\n" +
+  AllCommandsBig["east"] =
+  "Usage: 'east'\n" +
   "Move your character east.\n"
 
   return hc

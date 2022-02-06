@@ -15,8 +15,8 @@ func CoordsCommandHandler(cmd []string, session *Game.Session) {
 func NewCoordsCommand() CommandType {
   c := NewCommand("coords", "'coords' - Shows current player coordinates.")
   c.Handler = CoordsCommandHandler
-  c.Help =
-  "coords\n" +
+  AllCommandsBig["coords"] =
+  "Usage: 'coords'\n" +
   "Shows your current coordinates.\n"
 
   return c

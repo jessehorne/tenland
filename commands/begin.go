@@ -13,8 +13,8 @@ func BeginCommandHandler(cmd []string, session *Game.Session) {
 func NewBeginCommand() CommandType {
   bc := NewCommand("begin", "'begin' - Tells you how to start playing the game.")
   bc.Handler = BeginCommandHandler
-  bc.Help =
-  "begin\n" +
+  AllCommandsBig["begin"] =
+  "Usage: 'begin'\n" +
   "Gives you a brief explanation on how to begin if you're new to Tenland.\n"
 
   return bc

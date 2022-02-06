@@ -22,8 +22,8 @@ type RegisterUserInput struct {
 func NewRegisterCommand() CommandType {
   rc := NewCommand("register", "'register <username> <password>' - Register new character.'")
   rc.Handler = RegisterCommandHandler
-  rc.Help =
-  "register <username> <password>\n" +
+  AllCommandsBig["register"] =
+  "Usage: 'register <username> <password>'\n" +
   "Attempts to register the <username> account with the <password> credential.\n" +
   "Example: 'register dock NotMyActualPassword'\n"
 

@@ -10,7 +10,7 @@ func HelpCommandHandler(cmd []string, session *Game.Session) {
   if (len(cmd) > 1) {
     // Check to see if command exists
     if (AllCommands[cmd[1]] != "") {
-      session.Conn.Write([]byte(AllCommands[cmd[1]]))
+      session.Conn.Write([]byte(AllCommandsBig[cmd[1]]))
     } else {
       session.Conn.Write([]byte("I'm sorry, that command doesn't exist. Try 'commands'."))
     }
@@ -24,8 +24,8 @@ func HelpCommandHandler(cmd []string, session *Game.Session) {
 func NewHelpCommand() CommandType {
   hc := NewCommand("help", "'help' - General helpful information.")
   hc.Handler = HelpCommandHandler
-  hc.Help =
-  "help\n" +
+  AllCommandsBig["help"] =
+  "Usage: 'help'\n" +
   "Provides a brief introduction to Tenland and how to play it.\n"
 
   return hc

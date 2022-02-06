@@ -22,8 +22,8 @@ type LoginInput struct {
 func NewLoginCommand() CommandType {
   c := NewCommand("login", "'login <username> <password>' - Log in as a character.'")
   c.Handler = LoginCommandHandler
-  c.Help =
-  "login <username> <password>\n" +
+  AllCommandsBig["login"] =
+  "Usage: 'login <username> <password>'\n" +
   "Attempts to log into the <username> account with the <password> credential.\n" +
   "Example: 'login dock NotMyActualPassword'\n"
 

@@ -11,6 +11,53 @@ import (
 )
 
 
+// The main handler for the 'build' command.
+// Examples of use...
+// Create a room: 'build create'
+// Change the title of the current room: 'build set title An Example Room Name'
+// Change the description of the current room: 'build set desc An example room description!'
+// Add an exit: 'build exit add north'
+// Remove an exit: 'build exit remove north'
+func BuildCommandHandler(cmd []string, session *Game.Session) {
+  // Auth
+    // Verify that user is logged in
+    if !session.Authed {
+      session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    }
+
+    // Verify that user is a builder
+    if !session.User.IsBuilder {
+      session.Conn.Write([]byte("You're not a builder!\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    }
+
+  // Validate that cmd is at least 2 in length
+  if len(cmd) < 2 {
+    session.Conn.Write([]byte("Invalid. You must specify a command. Please type 'help build'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  first := cmd[1]
+
+  if first == "set" {
+    SetRoom(cmd[1:], session)
+    return
+  } else if first == "create" {
+    CreateRoom(session)
+    return
+  } else if first == "exit" {
+    ExitRoom(cmd[1:], session)
+    return
+  }
+
+  session.Conn.Write([]byte("Invalid. Invalid command. Please type 'help build'.\n"))
+  session.Conn.Write([]byte(Data.Cursor))
+}
+
 // Creates blank room at users current position
 func CreateRoom(session *Game.Session) {
   // Get user coordinates
@@ -192,56 +239,18 @@ func SetRoom(cmd []string, session *Game.Session) {
 }
 
 
-func BuildCommandHandler(cmd []string, session *Game.Session) {
-  // Auth
-    // Verify that user is logged in
-    if !session.Authed {
-      session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
-      return
-    }
-
-    // Verify that user is a builder
-    if !session.User.IsBuilder {
-      session.Conn.Write([]byte("You're not a builder!\n"))
-      session.Conn.Write([]byte(Data.Cursor))
-      return
-    }
-
-  // Validate that cmd is at least 2 in length
-  if len(cmd) < 2 {
-    session.Conn.Write([]byte("Invalid. You must specify a command. Please type 'help build'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
-    return
-  }
-
-  first := cmd[1]
-
-  if first == "set" {
-    SetRoom(cmd[1:], session)
-    return
-  } else if first == "create" {
-    CreateRoom(session)
-    return
-  } else if first == "exit" {
-    ExitRoom(cmd[1:], session)
-    return
-  }
-
-  session.Conn.Write([]byte("Invalid. Invalid command. Please type 'help build'.\n"))
-  session.Conn.Write([]byte(Data.Cursor))
-}
-
-
 func NewBuildCommand() CommandType {
   hc := NewCommand("build", "'build <command> <command_arg> <data>' - Tool for builders.")
   hc.Handler = BuildCommandHandler
-  hc.Help =
-  "build\n" +
+  AllCommandsBig["build"] =
+  "Usage: 'build <command> <args...>\n" +
   "Lets builders edit the area description.\n" +
-  "Usage:\n" +
+  "Examples:\n" +
+  "build create\n" +
   "build set title A Small Room\n" +
-  "build set desc A description of a small room.\n"
+  "build set desc A description of a small room.\n" +
+  "build exit add north\n" +
+  "build exit remove north\n"
 
   return hc
 }

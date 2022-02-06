@@ -50,8 +50,8 @@ func NorthCommandHandler(cmd []string, session *Game.Session) {
 func NewNorthCommand() CommandType {
   hc := NewCommand("north", "'north' - Move your character north.")
   hc.Handler = NorthCommandHandler
-  hc.Help =
-  "north\n" +
+  AllCommandsBig["north"] =
+  "Usage: 'north'\n" +
   "Move your character north.\n"
 
   return hc

@@ -1,6 +1,7 @@
 package Command
 
 var AllCommands = make(map[string]string)
+var AllCommandsBig = make(map[string]string)
 
 var Run = map[string]interface{}{
   "help": NewHelpCommand(),
@@ -45,7 +46,6 @@ func GetClosestMatch(search string) string {
 
 func NewCommand(key string, help string) CommandType {
   nc := CommandType{}
-  nc.Help = help
 
   // Add to list of commands
   AllCommands[key] = help
