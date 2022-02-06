@@ -18,6 +18,7 @@ var Run = map[string]interface{}{
   "west": NewWestCommand(),
   "global": NewGlobalCommand(),
   "say": NewSayCommand(),
+  "worth": NewWorthCommand(),
 }
 
 type CommandType struct {

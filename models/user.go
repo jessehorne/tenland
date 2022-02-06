@@ -10,7 +10,8 @@ type User struct {
   gorm.Model
   Username string `gorm:"type:varchar(255);unique"`
   Password string `gorm:"type:varchar(255)"`
-  Gold int `gorm:"type:int"`
+  GoldBank int `gorm:"type:int"`
+  GoldHand int `gorm:"type:int"`
   IsAdmin bool `gorm:"type:bool"`
   IsBuilder bool `gorm:"type:bool"`
   X int `gorm:"type:int"`
@@ -23,7 +24,8 @@ func NewUser(DB *gorm.DB, username string, password string) (User, error) {
   u := User{
     Username: username,
     Password: hashedPassword,
-    Gold: 100,
+    GoldBank: 0,
+    GoldHand: 0,
     IsAdmin: true,
     IsBuilder: true,
   }
