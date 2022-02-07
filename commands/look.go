@@ -4,6 +4,7 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
+  "github.com/jessehorne/tenland/colors"
 )
 
 func LookCommandHandler(cmd []string, session *Game.Session) {
@@ -33,10 +34,29 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
     return
   }
 
+  // Get list of users in room
+  users := ""
+
+  for _, u := range Game.Sessions {
+    if u.User.X == x && u.User.Y == y && u.ID != session.ID {
+      if users == "" {
+        users = u.User.Username
+      } else {
+        users = users + ", " + u.User.Username
+      }
+    }
+  }
+
+  if users == "" {
+    users = "There doesn't appear to be anyone here."
+  }
+
   // The room was found, print title, desc + exits
   session.Conn.Write([]byte(searchRoom.Title + "\n"))
   session.Conn.Write([]byte(searchRoom.Desc + "\n\n"))
+  session.Conn.Write([]byte(Colors.Yellow("Users: " + users + "\n")))
   session.Conn.Write([]byte("Exits: [" + searchRoom.Exits + "]\n\n"))
+
   session.Conn.Write([]byte(Data.Cursor))
 }
 
