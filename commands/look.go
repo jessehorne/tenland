@@ -51,10 +51,32 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
     users = "There doesn't appear to be anyone here."
   }
 
+  // Get list of items in room
+  items := ""
+
+  allItems := Model.ItemsGetByRoom(Data.DB, x, y)
+
+  for _,v := range allItems {
+    if v.Held {
+      continue
+    }
+    
+    if items == "" {
+      items = v.Name
+    } else {
+      items = items + ", " + v.Name
+    }
+  }
+
+  if items == "" {
+    items = "There doesn't appear to be any items here."
+  }
+
   // The room was found, print title, desc + exits
   session.Conn.Write([]byte(searchRoom.Title + "\n"))
   session.Conn.Write([]byte(searchRoom.Desc + "\n\n"))
   session.Conn.Write([]byte(Colors.Yellow("Users: " + users + "\n")))
+  session.Conn.Write([]byte("Items: " + items + "\n"))
   session.Conn.Write([]byte("Exits: [" + searchRoom.Exits + "]\n\n"))
 
   session.Conn.Write([]byte(Data.Cursor))
