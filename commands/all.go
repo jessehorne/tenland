@@ -20,6 +20,7 @@ var Run = map[string]interface{}{
   "say": NewSayCommand(),
   "worth": NewWorthCommand(),
   "players": NewPlayersCommand(),
+  "market": NewMarketCommand(),
 }
 
 type CommandType struct {
