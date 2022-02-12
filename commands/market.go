@@ -6,7 +6,7 @@ import (
 )
 
 func MarketCommandHandler(cmd []string, session *Game.Session) {
-  session.Conn.Write([]byte("This command is a work-in-progress and isn't usable yet! Check back soon."));
+  session.Conn.Write([]byte("This command is a work-in-progress and isn't usable yet! Check back soon."))
 
   session.Conn.Write([]byte("\n" + Data.Cursor))
 }
