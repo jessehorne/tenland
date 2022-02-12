@@ -69,7 +69,14 @@ func ItemDrop(DB *gorm.DB, id int, x int, y int) bool {
 // Gets all items at X,Y that are not being held
 func ItemsGetByRoom(DB *gorm.DB, x int, y int) []Item {
   var items []Item
-  DB.Where(&Item{X: x, Y: y}).Find(&items)
+  DB.Where(&Item{X: x, Y: y, Held: false}).Find(&items)
+
+  return items
+}
+
+func ItemsGetByUserID(DB *gorm.DB, userID uint) []Item {
+  var items []Item
+  DB.Where(&Item{UserID: userID, Held: true}).Find(&items)
 
   return items
 }
