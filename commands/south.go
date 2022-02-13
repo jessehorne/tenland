@@ -1,8 +1,6 @@
 package Command
 
 import (
-  "strings"
-
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
@@ -11,40 +9,43 @@ import (
 func SouthCommandHandler(cmd []string, session *Game.Session) {
   // Get users current position
   x := session.User.X
-  y := session.User.Y
+  y := session.User.Y + 1
 
   // Get room from DB at current coords
   searchRoom := Model.Room{}
   result := Data.DB.Where(Model.Room{X: x, Y: y}).First(&searchRoom)
 
   if result.RowsAffected == 0 {
-    // Can't move because the user isn't even in a room
-    session.Conn.Write([]byte("You can't enter a room from the abyss.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    // This runs if there is no room where the user is going
+    if !session.User.IsBuilder {
+      // Can't move because the user isn't even in a room
+      session.Conn.Write([]byte("You can't enter a room from the abyss.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
 
-    return
-  }
+      return
+    } else {
+      session.User.X = x
+      session.User.Y = y
 
-  // Determine if room has NSouthexit
-  hasSouthExit := strings.Contains(searchRoom.Exits, "south")
+      Data.DB.Save(&session.User)
 
-  // If so, move user and perform 'look' automatically
-  if hasSouthExit {
-    // update position and save in database
-    session.User.Y += 1
+      session.Conn.Write([]byte("You went south into the abyss.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    }
+  } else {
+    // If there is a room, then move there
+    session.User.X = x
+    session.User.Y = y
+
     Data.DB.Save(&session.User)
 
-    // output room 'look'
     session.Conn.Write([]byte(searchRoom.Title + "\n"))
     session.Conn.Write([]byte(searchRoom.Desc + "\n\n"))
     session.Conn.Write([]byte(Data.Cursor))
-
     return
   }
-
-  // If not, show Data.InvalidMovement
-  session.Conn.Write([]byte(Data.InvalidMovement))
-  session.Conn.Write([]byte(Data.Cursor))
+  
 }
 
 func NewSouthCommand() CommandType {
