@@ -15,7 +15,7 @@ func MeCommandHandler(cmd []string, session *Game.Session) {
 
     return
   }
-  
+
   card := `
 Name: %s
 
@@ -26,14 +26,15 @@ Gold in Hand: %d
 
 Stats
 =====
-Strength: %d
+Strength: %d            Max Carry Weight: %dkg
 `
 
   session.Conn.Write([]byte(fmt.Sprintf(card,
     session.User.Username,
     session.User.GoldBank,
     session.User.GoldHand,
-    session.User.ST)))
+    session.User.ST,
+    session.User.GetMaxCarryWeight())))
   session.Conn.Write([]byte("\n" + Data.Cursor))
 }
 

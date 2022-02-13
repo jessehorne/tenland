@@ -15,7 +15,7 @@ import (
 
   Other
   =====
-  Max Carry Weight = ST + 100
+  Max Carry Weight = ST + 99
 */
 
 type User struct {
@@ -32,7 +32,7 @@ type User struct {
 }
 
 func (self User) GetMaxCarryWeight() int {
-  return self.ST + 100
+  return self.ST + 99
 }
 
 func NewUser(DB *gorm.DB, username string, password string) (User, error) {
