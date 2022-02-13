@@ -9,24 +9,9 @@ import (
   "github.com/jessehorne/tenland/models"
 )
 
-func CreateCommandHandler(cmd []string, session *Game.Session) {
-  // Auth
-    // Verify that user is logged in
-    if !session.Authed {
-      session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
-      return
-    }
-
-    // Verify that user is a builder
-    if !session.User.IsBuilder {
-      session.Conn.Write([]byte("You're not a builder!\n"))
-      session.Conn.Write([]byte(Data.Cursor))
-      return
-    }
-
+func CreateItem(cmd []string, session *Game.Session) {
   // Validate that cmd is at least 5 in length
-  if len(cmd) < 5 {
+  if len(cmd) < 6 {
     session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help create'.\n"))
     session.Conn.Write([]byte(Data.Cursor))
     return
@@ -34,22 +19,22 @@ func CreateCommandHandler(cmd []string, session *Game.Session) {
 
 
   // Get arguments and set appropriate variables
-  name := cmd[1]
-  x, _ := strconv.Atoi(cmd[2])
-  y, _ := strconv.Atoi(cmd[3])
+  name := cmd[2]
+  x, _ := strconv.Atoi(cmd[3])
+  y, _ := strconv.Atoi(cmd[4])
   held := false
   userID := -1
 
   if cmd[4] == "true" {
     // Validate that cmd is at least 6 in length
-    if len(cmd) < 6 {
+    if len(cmd) < 7 {
       session.Conn.Write([]byte("Invalid. You have to specify a User ID. Please type 'help create'.\n"))
       session.Conn.Write([]byte(Data.Cursor))
       return
     }
 
     held = true
-    userID, _ = strconv.Atoi(cmd[5])
+    userID, _ = strconv.Atoi(cmd[6])
   } else {
     held = false
   }
@@ -82,15 +67,60 @@ func CreateCommandHandler(cmd []string, session *Game.Session) {
     session.Conn.Write([]byte(fmt.Sprintf("Created item named '%s'!", newItem.Name)))
     session.Conn.Write([]byte("\n" + Data.Cursor))
   }
+}
+
+func ItemCommandHandler(cmd []string, session *Game.Session) {
+  // Auth
+    // Verify that user is logged in
+    if !session.Authed {
+      session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    }
+
+    // Verify that user is a builder
+    if !session.User.IsBuilder {
+      session.Conn.Write([]byte("You're not a builder!\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    }
+
+    // Verify that there is at least one arg to specify the command
+    if len(cmd) < 2 {
+      session.Conn.Write([]byte("You need to supply a command to 'item'. Please type 'help item'.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+      return
+    }
+
+    // Handle commands
+    command := cmd[1]
+
+    if command == "create" {
+      CreateItem(cmd, session)
+    } else {
+      session.Conn.Write([]byte("Invalid command supplied to 'item'. Please type 'help item'.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+    }
 
   // end of command
 }
 
-func NewCreateCommand() CommandType {
-  hc := NewCommand("create", "'create <name> <x> <y> <held> <userid?>' - Creates an item.")
-  hc.Handler = CreateCommandHandler
-  AllCommandsBig["create"] = `
-Usage: 'create <name> <x> <y> <held> <userid?>
+func NewItemCommand() CommandType {
+  hc := NewCommand("item", "'item <command> <arg> ...' - Creates an item.")
+  hc.Handler = ItemCommandHandler
+  AllCommandsBig["item"] = `
+Usage: 'item <cmd> <args> ...'
+
+Options
+=======
+
+1. 'create' (See Creating an Item)
+
+Create an Item
+==============
+
+Command: 'item create <name> <x> <y> <held> <userid?>'
+
 Creates an item named <name> with an origin position of <x>,<y>. If <held> is
 true, <userid> is necessary as well.
 

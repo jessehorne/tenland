@@ -21,7 +21,7 @@ var Run = map[string]interface{}{
   "worth": NewWorthCommand(),
   "players": NewPlayersCommand(),
   "market": NewMarketCommand(),
-  "create": NewCreateCommand(),
+  "item": NewItemCommand(),
   "inventory": NewInventoryCommand(),
 }
 
