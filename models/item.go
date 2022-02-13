@@ -11,6 +11,7 @@ type Item struct {
   Y int `gorm:"type:int"`
   Held bool `gorm:"type:bool"`
   UserID uint `gorm:"type:int"`
+  Description string `gorm:"type:text"`
 }
 
 func ItemNew(DB *gorm.DB, name string, x int, y int, held bool, userID uint) (Item, error) {
@@ -63,7 +64,7 @@ func ItemDrop(DB *gorm.DB, id int, x int, y int) bool {
 
   DB.Save(&searchItem)
 
-  return true;
+  return true
 }
 
 // Gets all items at X,Y that are not being held
@@ -79,4 +80,19 @@ func ItemsGetByUserID(DB *gorm.DB, userID uint) []Item {
   DB.Where(&Item{UserID: userID, Held: true}).Find(&items)
 
   return items
+}
+
+func ItemUpdateDescription(DB *gorm.DB, itemID uint, description string) bool {
+  searchItem := Item{}
+  result := DB.First(&searchItem, itemID)
+
+  if result.RowsAffected == 0 {
+    return false
+  }
+
+  searchItem.Description = description
+
+  DB.Save(&searchItem)
+
+  return true
 }

@@ -1,6 +1,8 @@
 package Command
 
 import (
+  "strconv"
+
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
@@ -60,11 +62,19 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
     if v.Held {
       continue
     }
-    
+
     if items == "" {
       items = v.Name
+
+      // if user is builder, add ID to item
+      id := strconv.Itoa(int(v.ID))
+      items = items + "(" + id + ")"
     } else {
       items = items + ", " + v.Name
+
+      // if user is builder, add ID to item
+      id := strconv.Itoa(int(v.ID))
+      items = items + "(" + id + ")"
     }
   }
 

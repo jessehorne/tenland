@@ -3,16 +3,38 @@ package Command
 import (
   "strconv"
   "fmt"
+  "strings"
 
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
 )
 
+func DescribeItem(cmd []string, session *Game.Session) {
+  if len(cmd) < 4 {
+    session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help item'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  itemID,_ := strconv.Atoi(cmd[2])
+  description := strings.Join(cmd[3:], " ")
+
+  success := Model.ItemUpdateDescription(Data.DB, uint(itemID), description)
+
+  if !success {
+    session.Conn.Write([]byte("Invalid. Could not update item description in the database. Please type 'help item'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  session.Conn.Write([]byte("You've updated an items description!\n"))
+  session.Conn.Write([]byte(Data.Cursor))
+}
+
 func CreateItem(cmd []string, session *Game.Session) {
-  // Validate that cmd is at least 5 in length
   if len(cmd) < 6 {
-    session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help create'.\n"))
+    session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help item'.\n"))
     session.Conn.Write([]byte(Data.Cursor))
     return
   }
@@ -28,7 +50,7 @@ func CreateItem(cmd []string, session *Game.Session) {
   if cmd[4] == "true" {
     // Validate that cmd is at least 6 in length
     if len(cmd) < 7 {
-      session.Conn.Write([]byte("Invalid. You have to specify a User ID. Please type 'help create'.\n"))
+      session.Conn.Write([]byte("Invalid. You have to specify a User ID. Please type 'help item'.\n"))
       session.Conn.Write([]byte(Data.Cursor))
       return
     }
@@ -97,6 +119,8 @@ func ItemCommandHandler(cmd []string, session *Game.Session) {
 
     if command == "create" {
       CreateItem(cmd, session)
+    } else if command == "describe" {
+      DescribeItem(cmd, session)
     } else {
       session.Conn.Write([]byte("Invalid command supplied to 'item'. Please type 'help item'.\n"))
       session.Conn.Write([]byte(Data.Cursor))
@@ -114,7 +138,8 @@ Usage: 'item <cmd> <args> ...'
 Options
 =======
 
-1. 'create' (See Creating an Item)
+1. 'create' - Create an item. (See Creating an Item)
+2. 'describe' - Describe an item. (See Describing an Item)
 
 Create an Item
 ==============
@@ -124,13 +149,22 @@ Command: 'item create <name> <x> <y> <held> <userid?>'
 Creates an item named <name> with an origin position of <x>,<y>. If <held> is
 true, <userid> is necessary as well.
 
-Example: create SuperSword 0 0 false
+Example: item create SuperSword 0 0 false
 That will create an item named 'SuperSword' and place it in the world at 0,0.
 
-Example 2: create ConquestOfBreadBook 0 0 true 1
+Example 2: item create ConquestOfBreadBook 0 0 true 1
 That will create an item named 'ConquestOfBreadBook' and give it to the player
 whose ID is '1'.
-  `
+
+Describing an Item
+==================
+
+Command: 'item describe <itemID> <description>'
+
+Sets the description of an item.
+
+Example: 'item describe 1 A book written by P. Kropotkin explaining Anarchism.'
+`
 
   return hc
 }
