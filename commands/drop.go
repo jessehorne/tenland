@@ -6,7 +6,7 @@ import (
   "github.com/jessehorne/tenland/models"
 )
 
-func TakeCommandHandler(cmd []string, session *Game.Session) {
+func DropCommandHandler(cmd []string, session *Game.Session) {
   // Get users current position
   x := session.User.X
   y := session.User.Y
@@ -20,45 +20,46 @@ func TakeCommandHandler(cmd []string, session *Game.Session) {
 
   // Handle if room doesn't exist in database
   if result.RowsAffected == 0 {
-    session.Conn.Write([]byte("There is no such item in the abyss.\n"))
+    session.Conn.Write([]byte("You can't drop an item into the abyss.\n"))
     session.Conn.Write([]byte(Data.Cursor))
     return
   }
 
   // Make sure argument is provided
   if len(cmd) < 2 {
-    session.Conn.Write([]byte("You have to specify what you want to take.\n"))
+    session.Conn.Write([]byte("You have to specify what you want to drop.\n"))
     session.Conn.Write([]byte(Data.Cursor))
     return
   }
 
   // Get list of items in room
-  allItems := Model.ItemsGetByRoom(Data.DB, x, y)
+  allItems := Model.ItemsGetByUserID(Data.DB, session.User.ID)
 
   for _,v := range allItems {
-    if v.Name == cmd[1] && !v.Held {
+    if v.Name == cmd[1] && v.Held {
       // Item exists, now let user pick it up
-      v.Held = true
-      v.UserID = session.User.ID
+      v.Held = false
+      v.X = x
+      v.Y = y
       Data.DB.Save(&v)
 
-      session.Conn.Write([]byte("You've picked up " + v.Name + " and put it in your inventory.\n"))
+      session.Conn.Write([]byte("You've dropped " + v.Name + ".\n"))
       session.Conn.Write([]byte(Data.Cursor))
 
       return
     }
   }
 
-  session.Conn.Write([]byte("There doesn't appear to be anything like that here to pick up.\n"))
+  session.Conn.Write([]byte("You can't drop something that doesn't exist. Or can you?\n"))
   session.Conn.Write([]byte(Data.Cursor))
 }
 
-func NewTakeCommand() CommandType {
-  hc := NewCommand("take", "'take <name>' - Pick up an item and put it in your inventory.")
-  hc.Handler = TakeCommandHandler
-  AllCommandsBig["take"] =
-  "Usage: 'take <name>'\n" +
-  "Pick up an item and put it in your inventory.\n"
+func NewDropCommand() CommandType {
+  hc := NewCommand("drop", "'drop <name>' - Drop an item from your inventory.")
+  hc.Handler = DropCommandHandler
+  AllCommandsBig["drop"] =
+  "Usage: 'drop <name>'\n" +
+  "Drop an item from your inventory.\n"
 
   return hc
 }

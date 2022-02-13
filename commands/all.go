@@ -25,6 +25,7 @@ var Run = map[string]interface{}{
   "inventory": NewInventoryCommand(),
   "me": NewMeCommand(),
   "take": NewTakeCommand(),
+  "drop": NewDropCommand(),
 }
 
 type CommandType struct {
