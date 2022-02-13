@@ -12,6 +12,7 @@ type Item struct {
   Held bool `gorm:"type:bool"`
   UserID uint `gorm:"type:int"`
   Description string `gorm:"type:text"`
+  Weight float32 `gorm:"type:float;default:0.0"`
 }
 
 func ItemNew(DB *gorm.DB, name string, x int, y int, held bool, userID uint) (Item, error) {
