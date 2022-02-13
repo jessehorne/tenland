@@ -37,15 +37,25 @@ func TakeCommandHandler(cmd []string, session *Game.Session) {
 
   for _,v := range allItems {
     if v.Name == cmd[1] && !v.Held {
-      // Item exists, now let user pick it up
-      v.Held = true
-      v.UserID = session.User.ID
-      Data.DB.Save(&v)
+      if float32(session.User.GetMaxCarryWeight()) >= session.User.CurrentWeight + v.Weight {
+        // Item exists, now let user pick it up
+        v.Held = true
+        v.UserID = session.User.ID
+        Data.DB.Save(&v)
 
-      session.Conn.Write([]byte("You've picked up " + v.Name + " and put it in your inventory.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+        session.User.CurrentWeight += v.Weight
+        Data.DB.Save(&session.User)
 
-      return
+        session.Conn.Write([]byte("You've picked up " + v.Name + " and put it in your inventory.\n"))
+        session.Conn.Write([]byte(Data.Cursor))
+
+        return
+      } else {
+        session.Conn.Write([]byte("You can't pick that up. It's too heavy!\n"))
+        session.Conn.Write([]byte(Data.Cursor))
+
+        return
+      }
     }
   }
 

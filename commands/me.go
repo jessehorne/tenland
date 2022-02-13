@@ -26,7 +26,8 @@ Gold in Hand: %d
 
 Stats
 =====
-Strength: %d            Max Carry Weight: %dkg
+Strength: %d
+Max Carry Weight: %dkg              Carrying: %.2fkg
 `
 
   session.Conn.Write([]byte(fmt.Sprintf(card,
@@ -34,7 +35,8 @@ Strength: %d            Max Carry Weight: %dkg
     session.User.GoldBank,
     session.User.GoldHand,
     session.User.ST,
-    session.User.GetMaxCarryWeight())))
+    session.User.GetMaxCarryWeight(),
+    session.User.CurrentWeight)))
   session.Conn.Write([]byte("\n" + Data.Cursor))
 }
 

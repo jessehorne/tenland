@@ -43,6 +43,9 @@ func DropCommandHandler(cmd []string, session *Game.Session) {
       v.Y = y
       Data.DB.Save(&v)
 
+      session.User.CurrentWeight -= v.Weight
+      Data.DB.Save(&session.User)
+
       session.Conn.Write([]byte("You've dropped " + v.Name + ".\n"))
       session.Conn.Write([]byte(Data.Cursor))
 

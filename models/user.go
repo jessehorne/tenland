@@ -29,6 +29,7 @@ type User struct {
   X int `gorm:"type:int"`
   Y int `gorm:"type:int"`
   ST int `gorm:"type:int;default:1"`
+  CurrentWeight float32 `gorm:"type:float;default:0.0"`
 }
 
 func (self User) GetMaxCarryWeight() int {
@@ -46,6 +47,7 @@ func NewUser(DB *gorm.DB, username string, password string) (User, error) {
     IsAdmin: true,
     IsBuilder: true,
     ST: 1,
+    CurrentWeight: 0.0,
   }
 
   result := DB.Create(&u)
