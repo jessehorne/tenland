@@ -97,3 +97,18 @@ func ItemUpdateDescription(DB *gorm.DB, itemID uint, description string) bool {
 
   return true
 }
+
+func ItemUpdateWeight(DB *gorm.DB, itemID uint, weight float32) bool {
+  searchItem := Item{}
+  result := DB.First(&searchItem, itemID)
+
+  if result.RowsAffected == 0 {
+    return false
+  }
+
+  searchItem.Weight = weight
+
+  DB.Save(&searchItem)
+
+  return true
+}

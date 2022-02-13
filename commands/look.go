@@ -1,6 +1,7 @@
 package Command
 
 import (
+  "fmt"
   "strconv"
 
   "github.com/jessehorne/tenland/data"
@@ -34,7 +35,7 @@ func LookAtItem(cmd []string, session *Game.Session) {
 
   for _,v := range allItems {
     if v.Name == cmd[1] {
-      session.Conn.Write([]byte("You look closely at " + v.Name + "...\n"))
+      session.Conn.Write([]byte(fmt.Sprintf("You look closely at %s (%.2fkg)...\n", v.Name, v.Weight)))
       session.Conn.Write([]byte(v.Description + "\n"))
       session.Conn.Write([]byte(Data.Cursor))
 

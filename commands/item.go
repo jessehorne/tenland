@@ -10,6 +10,34 @@ import (
   "github.com/jessehorne/tenland/models"
 )
 
+func WeightItem(cmd []string, session *Game.Session) {
+  if len(cmd) < 4 {
+    session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help item'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  itemID,_ := strconv.Atoi(cmd[2])
+  weight, err := strconv.ParseFloat(cmd[3], 32)
+
+  if err != nil {
+    session.Conn.Write([]byte("Invalid. Incorrect weight value. Please type 'help item'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  success := Model.ItemUpdateWeight(Data.DB, uint(itemID), float32(weight))
+
+  if !success {
+    session.Conn.Write([]byte("Invalid. Could not update item weight in the database. Please type 'help item'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+  session.Conn.Write([]byte("You've updated an items weight!\n"))
+  session.Conn.Write([]byte(Data.Cursor))
+}
+
 func DescribeItem(cmd []string, session *Game.Session) {
   if len(cmd) < 4 {
     session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help item'.\n"))
@@ -121,6 +149,8 @@ func ItemCommandHandler(cmd []string, session *Game.Session) {
       CreateItem(cmd, session)
     } else if command == "describe" {
       DescribeItem(cmd, session)
+    } else if command == "weight" {
+      WeightItem(cmd, session)
     } else {
       session.Conn.Write([]byte("Invalid command supplied to 'item'. Please type 'help item'.\n"))
       session.Conn.Write([]byte(Data.Cursor))
@@ -164,6 +194,17 @@ Command: 'item describe <itemID> <description>'
 Sets the description of an item.
 
 Example: 'item describe 1 A book written by P. Kropotkin explaining Anarchism.'
+
+Give Weight to an Item
+==================
+
+Command: 'item weight <itemID> <float>'
+
+Sets the weight of an item.
+
+Example: 'item weight 1 2.5'
+
+The above example sets the item with ID of '1' to 2.5kg.
 `
 
   return hc
