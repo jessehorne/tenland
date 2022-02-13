@@ -1,0 +1,58 @@
+package Command
+
+import (
+  "github.com/jessehorne/tenland/data"
+  "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/models"
+)
+
+func TakeCommandHandler(cmd []string, session *Game.Session) {
+  // Get users current position
+  x := session.User.X
+  y := session.User.Y
+
+  // Get room at current user position
+  searchRoom := Model.Room{}
+  result := Data.DB.Where(Model.Room{
+    X: x,
+    Y: y,
+  }).First(&searchRoom)
+
+  // Handle if room doesn't exist in database
+  if result.RowsAffected == 0 {
+    session.Conn.Write([]byte("There is no such item in the abyss.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+    return
+  }
+
+
+  // Get list of items in room
+  allItems := Model.ItemsGetByRoom(Data.DB, x, y)
+
+  for _,v := range allItems {
+    if v.Name == cmd[1] {
+      // Item exists, now let user pick it up
+      v.Held = true
+      v.UserID = session.User.ID
+      Data.DB.Save(&v)
+
+      session.Conn.Write([]byte("You've picked up " + v.Name + " and put it in your inventory.\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+
+      return
+    }
+  }
+
+  session.Conn.Write([]byte("There doesn't appear to be anything like that here to pick up.\n"))
+  session.Conn.Write([]byte(Data.Cursor))
+}
+
+func NewTakeCommand() CommandType {
+  hc := NewCommand("take", "'take <name>' - Pick up an item and put it in your inventory.")
+  hc.Handler = TakeCommandHandler
+  AllCommandsBig["take"] =
+  "Usage: 'take <name>'\n" +
+  "Pick up an item and put it in your inventory.\n"
+
+  return hc
+}
