@@ -9,15 +9,45 @@ import (
   "github.com/jessehorne/tenland/colors"
 )
 
-func LookCommandHandler(cmd []string, session *Game.Session) {
-  // Make sure user is logged in
-  if !session.Authed {
-    session.Conn.Write([]byte("You see nothing. You have to be logged in to look around. Type 'help login' or 'help register'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+func LookAtItem(cmd []string, session *Game.Session) {
+  // Get users current position
+  x := session.User.X
+  y := session.User.Y
 
+  // Get room at current user position
+  searchRoom := Model.Room{}
+  result := Data.DB.Where(Model.Room{
+    X: x,
+    Y: y,
+  }).First(&searchRoom)
+
+  // Handle if room doesn't exist in database
+  if result.RowsAffected == 0 {
+    session.Conn.Write([]byte("There is no such item in the abyss.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
     return
   }
 
+
+  // Get list of items in room
+  allItems := Model.ItemsGetByRoom(Data.DB, x, y)
+
+  for _,v := range allItems {
+    if v.Name == cmd[1] {
+      session.Conn.Write([]byte("You look closely at " + v.Name + "...\n"))
+      session.Conn.Write([]byte(v.Description + "\n"))
+      session.Conn.Write([]byte(Data.Cursor))
+
+      return
+    }
+  }
+
+  session.Conn.Write([]byte("There doesn't appear to be anything like that here.\n"))
+  session.Conn.Write([]byte(Data.Cursor))
+
+}
+
+func LookInRoom(cmd []string, session *Game.Session) {
   // Get users current position
   x := session.User.X
   y := session.User.Y
@@ -90,6 +120,23 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
   session.Conn.Write([]byte("Exits: [" + searchRoom.Exits + "]\n\n"))
 
   session.Conn.Write([]byte(Data.Cursor))
+}
+
+func LookCommandHandler(cmd []string, session *Game.Session) {
+  // Make sure user is logged in
+  if !session.Authed {
+    session.Conn.Write([]byte("You see nothing. You have to be logged in to look around. Type 'help login' or 'help register'.\n"))
+    session.Conn.Write([]byte(Data.Cursor))
+
+    return
+  }
+
+  // Determine if looking generally or at item
+  if len(cmd) == 1 {
+    LookInRoom(cmd, session)
+  } else {
+    LookAtItem(cmd, session)
+  }
 }
 
 func NewLookCommand() CommandType {
