@@ -47,5 +47,7 @@ func NewMeCommand() CommandType {
   "Usage: 'me'\n" +
   "Detailed information on your character.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "me"
+
   return hc
 }

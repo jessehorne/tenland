@@ -43,6 +43,7 @@ func NewInventoryCommand() CommandType {
   AllCommandsBig["inventory"] =
   "Usage: 'inventory'\n" +
   "Show your inventory.\n"
+  CommandsHelp[len(CommandsHelp)] = "inventory"
 
   return hc
 }

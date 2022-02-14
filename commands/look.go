@@ -147,5 +147,7 @@ func NewLookCommand() CommandType {
   "Usage: 'look'\n" +
   "Gives you a detailed description of the area you're current standing in.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "look"
+
   return c
 }

@@ -16,6 +16,7 @@ func NewBeginCommand() CommandType {
   AllCommandsBig["begin"] =
   "Usage: 'begin'\n" +
   "Gives you a brief explanation on how to begin if you're new to Tenland.\n"
+  CommandsHelp[len(CommandsHelp)] = "begin"
 
   return bc
 }

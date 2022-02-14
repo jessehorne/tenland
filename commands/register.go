@@ -27,6 +27,8 @@ func NewRegisterCommand() CommandType {
   "Attempts to register the <username> account with the <password> credential.\n" +
   "Example: 'register dock NotMyActualPassword'\n"
 
+  CommandsHelp[len(CommandsHelp)] = "register"
+
   return rc
 }
 

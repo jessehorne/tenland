@@ -31,5 +31,7 @@ func NewWorthCommand() CommandType {
   "Usage: 'worth'\n" +
   "Display information how how much gold you're carrying and how much is in your bank.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "worth"
+
   return hc
 }

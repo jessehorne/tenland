@@ -63,6 +63,7 @@ func NewDropCommand() CommandType {
   AllCommandsBig["drop"] =
   "Usage: 'drop <name>'\n" +
   "Drop an item from your inventory.\n"
+  CommandsHelp[len(CommandsHelp)] = "drop"
 
   return hc
 }

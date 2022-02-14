@@ -52,6 +52,7 @@ func NewEastCommand() CommandType {
   AllCommandsBig["east"] =
   "Usage: 'east'\n" +
   "Move your character east.\n"
+  CommandsHelp[len(CommandsHelp)] = "east"
 
   return hc
 }

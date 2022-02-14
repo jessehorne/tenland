@@ -46,6 +46,7 @@ func NewGlobalCommand() CommandType {
   "Send message to Global channel, which everyone can see.\n" +
   "Example...\n" +
   "'global Hello everyone!'"
+  CommandsHelp[len(CommandsHelp)] = "global"
 
   return gc
 }

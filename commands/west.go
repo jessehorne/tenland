@@ -53,5 +53,7 @@ func NewWestCommand() CommandType {
   "Usage: 'west'\n" +
   "Move your character west.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "west"
+
   return hc
 }

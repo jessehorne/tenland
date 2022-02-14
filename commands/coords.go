@@ -18,6 +18,7 @@ func NewCoordsCommand() CommandType {
   AllCommandsBig["coords"] =
   "Usage: 'coords'\n" +
   "Shows your current coordinates.\n"
+  CommandsHelp[len(CommandsHelp)] = "coords"
 
   return c
 }

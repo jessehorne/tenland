@@ -32,5 +32,7 @@ func NewPlayersCommand() CommandType {
   "Usage: 'players'\n" +
   "Get a list of all online players.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "players"
+
   return hc
 }

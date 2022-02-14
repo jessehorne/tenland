@@ -52,5 +52,7 @@ func NewSayCommand() CommandType {
   "Usage: 'say <message>'\n" +
   "Say something outloud that can be heard in the room you're currently in.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "say"
+
   return hc
 }

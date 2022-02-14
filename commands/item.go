@@ -207,5 +207,7 @@ Example: 'item weight 1 2.5'
 The above example sets the item with ID of '1' to 2.5kg.
 `
 
+  CommandsHelp[len(CommandsHelp)] = "item"
+
   return hc
 }

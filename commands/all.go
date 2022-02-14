@@ -1,5 +1,6 @@
 package Command
 
+var CommandsHelp = make(map[int]string)
 var AllCommands = make(map[string]string)
 var AllCommandsBig = make(map[string]string)
 

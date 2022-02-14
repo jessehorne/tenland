@@ -70,5 +70,7 @@ func NewTakeCommand() CommandType {
   "Usage: 'take <name>'\n" +
   "Pick up an item and put it in your inventory.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "take"
+
   return hc
 }

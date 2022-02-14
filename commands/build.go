@@ -251,6 +251,7 @@ func NewBuildCommand() CommandType {
   "build set desc A description of a small room.\n" +
   "build exit add north\n" +
   "build exit remove north\n"
+  CommandsHelp[len(CommandsHelp)] = "build"
 
   return hc
 }

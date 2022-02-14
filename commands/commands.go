@@ -10,10 +10,29 @@ func CommandsCommandHandler(cmd []string, session *Game.Session) {
   session.Conn.Write([]byte("[Commands]\n"))
 
   // Loop through commands and send each line
-  i := 1
-  for key, element := range AllCommands {
-    session.Conn.Write([]byte(strconv.Itoa(i) + ". " + key + "\t\t\t" + element + "\n"))
-    i++
+  // i := 1
+  // for key, element := range AllCommands {
+  //   session.Conn.Write([]byte(strconv.Itoa(i) + ". " + key + "\t\t\t" + element + "\n"))
+  //   i++
+  // }
+
+  for i := 0; i < len(CommandsHelp); i++ {
+    msg := strconv.Itoa(i+1) + ". " + CommandsHelp[i]
+
+    // Handles spaces (pls find better way)
+    spaceCount := 20 - len(CommandsHelp[i])
+
+    if i > 9 {
+      spaceCount--
+    }
+
+    for x := 0; x < spaceCount; x++ {
+      msg = msg + " "
+    }
+
+    msg = msg + AllCommands[CommandsHelp[i]] + "\n"
+
+    session.Conn.Write([]byte(msg))
   }
 
   // Send cursor
@@ -26,6 +45,7 @@ func NewCommandsCommand() CommandType {
   AllCommandsBig["commands"] =
   "Usage: 'commands'\n" +
   "Displays a list of all possible commands.\n"
+  CommandsHelp[len(CommandsHelp)] = "commands"
 
   return c
 }

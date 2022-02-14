@@ -45,7 +45,7 @@ func SouthCommandHandler(cmd []string, session *Game.Session) {
     session.Conn.Write([]byte(Data.Cursor))
     return
   }
-  
+
 }
 
 func NewSouthCommand() CommandType {
@@ -54,6 +54,8 @@ func NewSouthCommand() CommandType {
   AllCommandsBig["south"] =
   "Usage: 'south'\n" +
   "Move your character south.\n"
+
+  CommandsHelp[len(CommandsHelp)] = "south"
 
   return hc
 }

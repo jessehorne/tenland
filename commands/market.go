@@ -29,5 +29,7 @@ market buy <num>\t\tBuy an item.
 market sell <num> <amt>\t\tSell an item for a certain amount.
   `
 
+  CommandsHelp[len(CommandsHelp)] = "market"
+
   return hc
 }

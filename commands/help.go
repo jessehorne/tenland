@@ -27,6 +27,7 @@ func NewHelpCommand() CommandType {
   AllCommandsBig["help"] =
   "Usage: 'help'\n" +
   "Provides a brief introduction to Tenland and how to play it.\n"
+  CommandsHelp[len(CommandsHelp)] = "help"
 
   return hc
 }

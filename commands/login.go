@@ -27,6 +27,8 @@ func NewLoginCommand() CommandType {
   "Attempts to log into the <username> account with the <password> credential.\n" +
   "Example: 'login dock NotMyActualPassword'\n"
 
+  CommandsHelp[len(CommandsHelp)] = "login"
+
   return c
 }
 

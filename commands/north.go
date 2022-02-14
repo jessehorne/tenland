@@ -53,5 +53,7 @@ func NewNorthCommand() CommandType {
   "Usage: 'north'\n" +
   "Move your character north.\n"
 
+  CommandsHelp[len(CommandsHelp)] = "north"
+
   return hc
 }
