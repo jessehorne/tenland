@@ -9,13 +9,6 @@ import (
 func CommandsCommandHandler(cmd []string, session *Game.Session) {
   session.Conn.Write([]byte("[Commands]\n"))
 
-  // Loop through commands and send each line
-  // i := 1
-  // for key, element := range AllCommands {
-  //   session.Conn.Write([]byte(strconv.Itoa(i) + ". " + key + "\t\t\t" + element + "\n"))
-  //   i++
-  // }
-
   for i := 0; i < len(CommandsHelp); i++ {
     msg := strconv.Itoa(i+1) + ". " + CommandsHelp[i]
 
