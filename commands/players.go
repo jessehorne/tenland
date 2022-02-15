@@ -1,9 +1,9 @@
 package Command
 
 import (
-  "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/colors"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func PlayersCommandHandler(cmd []string, session *Game.Session) {
@@ -20,9 +20,7 @@ func PlayersCommandHandler(cmd []string, session *Game.Session) {
     users += "No users online...Weird, right?"
   }
 
-  session.Conn.Write([]byte(users))
-
-  session.Conn.Write([]byte("\n" + Data.Cursor))
+  Arg.WriteFull(session.Conn, users)
 }
 
 func NewPlayersCommand() CommandType {

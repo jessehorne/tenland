@@ -4,6 +4,7 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func WestCommandHandler(cmd []string, session *Game.Session) {
@@ -19,8 +20,7 @@ func WestCommandHandler(cmd []string, session *Game.Session) {
     // This runs if there is no room where the user is going
     if !session.User.IsBuilder {
       // Can't move because the user isn't even in a room
-      session.Conn.Write([]byte("You can't enter a room from the abyss.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You can't enter a room from the abyss.\n")
 
       return
     } else {
@@ -29,8 +29,7 @@ func WestCommandHandler(cmd []string, session *Game.Session) {
 
       Data.DB.Save(&session.User)
 
-      session.Conn.Write([]byte("You went west into the abyss.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You went west into the abyss.\n")
     }
   } else {
     // If there is a room, then move there
@@ -39,9 +38,8 @@ func WestCommandHandler(cmd []string, session *Game.Session) {
 
     Data.DB.Save(&session.User)
 
-    session.Conn.Write([]byte(searchRoom.Title + "\n"))
-    session.Conn.Write([]byte(searchRoom.Desc + "\n\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.Write(session.Conn, searchRoom.Title + "\n")
+    Arg.WriteFull(session.Conn, searchRoom.Desc + "\n\n")
   }
 
 }

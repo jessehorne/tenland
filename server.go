@@ -4,10 +4,12 @@ import (
   "net"
   "fmt"
   "os"
+  "strings"
 
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/arg"
   "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/commands"
 
   "github.com/joho/godotenv"
 )
@@ -60,7 +62,7 @@ func handleClient(conn net.Conn) {
   fmt.Println("[USER CONNECTED]", conn.LocalAddr().String())
 
   // Give user welcome
-  Arg.WriteFull([]byte(Data.Welcome), conn)
+  Arg.WriteFull(conn, Data.Welcome + "\n")
 
   // Create session
   session := Game.NewSession(conn)
@@ -74,8 +76,43 @@ func handleClient(conn net.Conn) {
     }
 
     // Compare input
-    Arg.Handle(n, buf, &session)
+    Handle(n, buf, &session)
 
+  }
+}
+
+func Handle(n int, buf [512]byte, session *Game.Session) {
+  // Split command
+  cmd := string(buf[0:n-1])
+  splitCmd := strings.Split(cmd, " ")
+
+  if cmd == "" {
+    Arg.Cursor(session.Conn)
+    return
+  }
+
+  if splitCmd[0] == "exit" {
+    Arg.Write(session.Conn, Data.Goodbye)
+    session.Conn.Close()
+    fmt.Println("[USER DISCONNECTED]", session.IP)
+  } else {
+    // Get closest match
+    match := Command.GetClosestMatch(splitCmd[0])
+
+    // No match found
+    if match == "" {
+      Arg.WriteFull(session.Conn, Data.UnknownCommand)
+      return
+    }
+
+    // Get command from Run map
+    f, found := Command.Run[match]
+
+    if found {
+      f.(Command.CommandType).Handler.(func([]string, *Game.Session))(splitCmd, session)
+    } else {
+      Arg.WriteFull(session.Conn, Data.UnknownCommand)
+    }
   }
 }
 

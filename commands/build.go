@@ -8,6 +8,7 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
+  "github.com/jessehorne/tenland/arg"
 )
 
 
@@ -22,22 +23,19 @@ func BuildCommandHandler(cmd []string, session *Game.Session) {
   // Auth
     // Verify that user is logged in
     if !session.Authed {
-      session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You can't do this unless you're logged in.\n")
       return
     }
 
     // Verify that user is a builder
     if !session.User.IsBuilder {
-      session.Conn.Write([]byte("You're not a builder!\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You're not a builder!\n")
       return
     }
 
   // Validate that cmd is at least 2 in length
   if len(cmd) < 2 {
-    session.Conn.Write([]byte("Invalid. You must specify a command. Please type 'help build'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. You must specify a command. Please type 'help build'.\n")
     return
   }
 
@@ -54,8 +52,7 @@ func BuildCommandHandler(cmd []string, session *Game.Session) {
     return
   }
 
-  session.Conn.Write([]byte("Invalid. Invalid command. Please type 'help build'.\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "Invalid. Invalid command. Please type 'help build'.\n")
 }
 
 // Creates blank room at users current position
@@ -70,8 +67,7 @@ func CreateRoom(session *Game.Session) {
 
   // If it exists, update it
   if result.RowsAffected > 0 {
-    session.Conn.Write([]byte("Invalid. A room already exists here. Type 'look'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. A room already exists here. Type 'look'.\n")
 
     return
   } else {
@@ -79,11 +75,9 @@ func CreateRoom(session *Game.Session) {
     _, err := Model.NewRoom(Data.DB, x, y, "Construction Zone", "This room is new and unfinished.")
 
     if err != nil {
-      session.Conn.Write([]byte("Sorry! Something went wrong creating the room.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "Sorry! Something went wrong creating the room.\n")
     } else {
-      session.Conn.Write([]byte("You've created a room!\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You've created a room!\n")
     }
   }
 }
@@ -95,8 +89,7 @@ func CreateRoom(session *Game.Session) {
 func ExitRoom(cmd []string, session *Game.Session) {
   // len(cmd) should be at least 3
   if len(cmd) < 3 {
-    session.Conn.Write([]byte("Invalid use of 'exit'. Missing arguments. Please type 'help build'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid use of 'exit'. Missing arguments. Please type 'help build'.\n")
     return
   }
 
@@ -115,8 +108,7 @@ func ExitRoom(cmd []string, session *Game.Session) {
   }).First(&searchRoom)
 
   if result.RowsAffected == 0 {
-    session.Conn.Write([]byte("Invalid use of 'exit'. You can't set exits in the abyss. Please type 'help build'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid use of 'exit'. You can't set exits in the abyss. Please type 'help build'.\n")
     return
   }
 
@@ -133,8 +125,7 @@ func ExitRoom(cmd []string, session *Game.Session) {
     }
 
     if found {
-      session.Conn.Write([]byte("Invalid use of 'exit'. That exit already exists. Please type 'help build'.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "Invalid use of 'exit'. That exit already exists. Please type 'help build'.\n")
       return
     } else {
       // add exit and save
@@ -146,8 +137,7 @@ func ExitRoom(cmd []string, session *Game.Session) {
 
       Data.DB.Save(&searchRoom)
 
-      session.Conn.Write([]byte("You've added an exit to the current room!\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You've added an exit to the current room!\n")
 
       return
     }
@@ -173,29 +163,25 @@ func ExitRoom(cmd []string, session *Game.Session) {
 
       Data.DB.Save(&searchRoom)
 
-      session.Conn.Write([]byte("You've removed an exit from the current room!\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You've removed an exit from the current room!\n")
 
       return
     } else {
-      session.Conn.Write([]byte("Invalid use of 'exit'. That exit doesn't exist in this room. Please type 'help build'.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "Invalid use of 'exit'. That exit doesn't exist in this room. Please type 'help build'.\n")
       return
     }
 
   }
 
   // If it gets here, means the user typed wrong command (not 'add' nor 'remove')
-  session.Conn.Write([]byte("Invalid use of 'exit'. Invalid option to 'exit'. Please type 'help build'.\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "Invalid use of 'exit'. Invalid option to 'exit'. Please type 'help build'.\n")
 }
 
 // Used to set room variables such as 'title' and 'desc'
 func SetRoom(cmd []string, session *Game.Session) {
   // len(cmd) should be at least 3 (set, title OR desc, data) example: 'set title A Small Room'
   if len(cmd) < 3 {
-    session.Conn.Write([]byte("Invalid use of 'set'. Missing arguments. Please type 'help build'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid use of 'set'. Missing arguments. Please type 'help build'.\n")
     return
   }
 
@@ -210,8 +196,7 @@ func SetRoom(cmd []string, session *Game.Session) {
   result := Data.DB.Where(Model.Room{X: x, Y: y}).First(&searchRoom)
 
   if result.RowsAffected == 0 {
-    session.Conn.Write([]byte("Invalid use of 'set'. You can't build in the abyss. Please type 'help build'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid use of 'set'. You can't build in the abyss. Please type 'help build'.\n")
     return
   }
 
@@ -222,20 +207,17 @@ func SetRoom(cmd []string, session *Game.Session) {
     searchRoom.Title = data
     Data.DB.Save(&searchRoom)
 
-    session.Conn.Write([]byte("You've updated the room <title>.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You've updated the room <title>.\n")
     return
   } else if which == "desc" {
     searchRoom.Desc = data
     Data.DB.Save(&searchRoom)
 
-    session.Conn.Write([]byte("You've updated the room <description>.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You've updated the room <description>.\n")
     return
   }
 
-  session.Conn.Write([]byte("Invalid use of 'set'. Invalid arguments. Please type 'help build'.\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "Invalid use of 'set'. Invalid arguments. Please type 'help build'.\n")
 }
 
 

@@ -4,6 +4,7 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func TakeCommandHandler(cmd []string, session *Game.Session) {
@@ -20,15 +21,13 @@ func TakeCommandHandler(cmd []string, session *Game.Session) {
 
   // Handle if room doesn't exist in database
   if result.RowsAffected == 0 {
-    session.Conn.Write([]byte("There is no such item in the abyss.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "There is no such item in the abyss.\n")
     return
   }
 
   // Make sure argument is provided
   if len(cmd) < 2 {
-    session.Conn.Write([]byte("You have to specify what you want to take.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You have to specify what you want to take.\n")
     return
   }
 
@@ -46,21 +45,18 @@ func TakeCommandHandler(cmd []string, session *Game.Session) {
         session.User.CurrentWeight += v.Weight
         Data.DB.Save(&session.User)
 
-        session.Conn.Write([]byte("You've picked up " + v.Name + " and put it in your inventory.\n"))
-        session.Conn.Write([]byte(Data.Cursor))
+        Arg.WriteFull(session.Conn, "You've picked up " + v.Name + " and put it in your inventory.\n")
 
         return
       } else {
-        session.Conn.Write([]byte("You can't pick that up. It's too heavy!\n"))
-        session.Conn.Write([]byte(Data.Cursor))
+        Arg.WriteFull(session.Conn, "You can't pick that up. It's too heavy!\n")
 
         return
       }
     }
   }
 
-  session.Conn.Write([]byte("There doesn't appear to be anything like that here to pick up.\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "There doesn't appear to be anything like that here to pick up.\n")
 }
 
 func NewTakeCommand() CommandType {

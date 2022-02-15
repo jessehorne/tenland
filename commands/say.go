@@ -3,24 +3,22 @@ package Command
 import (
   "strings"
 
-  "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/colors"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func SayCommandHandler(cmd []string, session *Game.Session) {
   // Make sure user is logged in
   if !session.Authed {
-    session.Conn.Write([]byte("You have to be logged in to say things. Type 'help register' or 'help login'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You have to be logged in to say things. Type 'help register' or 'help login'.\n")
 
     return
   }
 
   // Make sure len(cmd) > 1
   if len(cmd) < 2 {
-    session.Conn.Write([]byte("What would you like to say? Try 'help say'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "What would you like to say? Try 'help say'.\n")
 
     return
   }
@@ -38,8 +36,7 @@ func SayCommandHandler(cmd []string, session *Game.Session) {
   // Send message to all users in this area
   for _,sess := range Game.Sessions {
     if sess.User.X == x && sess.User.Y == y {
-      sess.Conn.Write([]byte(packet))
-      sess.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(sess.Conn, packet)
     }
   }
 

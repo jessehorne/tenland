@@ -3,24 +3,22 @@ package Command
 import (
   "strings"
 
-  "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/colors"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func GlobalCommandHandler(cmd []string, session *Game.Session) {
   // Make sure user is logged in
   if !session.Authed {
-    session.Conn.Write([]byte("You have to be logged in to send messages to Global.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You have to be logged in to send messages to Global.\n")
 
     return
   }
 
   // Make sure len(cmd) > 1
   if len(cmd) < 2 {
-    session.Conn.Write([]byte("What would you like to send to Global? Try 'help global'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "What would you like to send to Global? Try 'help global'.\n")
 
     return
   }
@@ -33,8 +31,7 @@ func GlobalCommandHandler(cmd []string, session *Game.Session) {
 
   // Loop through all sessions and send message
   for _,val := range Game.Sessions {
-    val.Conn.Write([]byte(packet))
-    val.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(val.Conn, packet)
   }
 }
 

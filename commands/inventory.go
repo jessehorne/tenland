@@ -6,13 +6,13 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func InventoryCommandHandler(cmd []string, session *Game.Session) {
   // Verify that user is logged in
   if !session.Authed {
-    session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You can't do this unless you're logged in.\n")
     return
   }
 
@@ -32,9 +32,7 @@ func InventoryCommandHandler(cmd []string, session *Game.Session) {
     }
   }
 
-  session.Conn.Write([]byte(message))
-
-  session.Conn.Write([]byte("\n" + Data.Cursor))
+  Arg.WriteFull(session.Conn, message)
 }
 
 func NewInventoryCommand() CommandType {

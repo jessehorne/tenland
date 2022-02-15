@@ -3,6 +3,7 @@ package Command
 import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func HelpCommandHandler(cmd []string, session *Game.Session) {
@@ -10,15 +11,13 @@ func HelpCommandHandler(cmd []string, session *Game.Session) {
   if (len(cmd) > 1) {
     // Check to see if command exists
     if (AllCommands[cmd[1]] != "") {
-      session.Conn.Write([]byte(AllCommandsBig[cmd[1]]))
+      Arg.WriteFull(session.Conn, AllCommandsBig[cmd[1]] + "\n")
     } else {
-      session.Conn.Write([]byte("I'm sorry, that command doesn't exist. Try 'commands'."))
+      Arg.WriteFull(session.Conn, "I'm sorry, that command doesn't exist. Try 'commands'.\n")
     }
   } else {
-    session.Conn.Write([]byte(Data.Help))
+    Arg.WriteFull(session.Conn, Data.Help + "\n")
   }
-
-  session.Conn.Write([]byte("\n" + Data.Cursor))
 }
 
 func NewHelpCommand() CommandType {

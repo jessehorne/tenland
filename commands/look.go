@@ -8,6 +8,7 @@ import (
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
   "github.com/jessehorne/tenland/colors"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func LookAtItem(cmd []string, session *Game.Session) {
@@ -24,8 +25,7 @@ func LookAtItem(cmd []string, session *Game.Session) {
 
   // Handle if room doesn't exist in database
   if result.RowsAffected == 0 {
-    session.Conn.Write([]byte("There is no such item in the abyss.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "There is no such item in the abyss.\n")
     return
   }
 
@@ -35,16 +35,14 @@ func LookAtItem(cmd []string, session *Game.Session) {
 
   for _,v := range allItems {
     if v.Name == cmd[1] {
-      session.Conn.Write([]byte(fmt.Sprintf("You look closely at %s (%.2fkg)...\n", v.Name, v.Weight)))
-      session.Conn.Write([]byte(v.Description + "\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.Write(session.Conn, fmt.Sprintf("You look closely at %s (%.2fkg)...\n", v.Name, v.Weight))
+      Arg.WriteFull(session.Conn, v.Description + "\n")
 
       return
     }
   }
 
-  session.Conn.Write([]byte("There doesn't appear to be anything like that here.\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "There doesn't appear to be anything like that here.\n")
 
 }
 
@@ -62,8 +60,7 @@ func LookInRoom(cmd []string, session *Game.Session) {
 
   // Handle if room doesn't exist in database
   if result.RowsAffected == 0 {
-    session.Conn.Write([]byte(Data.Abyss))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, Data.Abyss)
     return
   }
 
@@ -114,20 +111,16 @@ func LookInRoom(cmd []string, session *Game.Session) {
   }
 
   // The room was found, print title, desc + exits
-  session.Conn.Write([]byte(searchRoom.Title + "\n"))
-  session.Conn.Write([]byte(searchRoom.Desc + "\n\n"))
-  session.Conn.Write([]byte(Colors.Yellow("Users: " + users + "\n")))
-  session.Conn.Write([]byte("Items: " + items + "\n"))
-  session.Conn.Write([]byte("Exits: [" + searchRoom.Exits + "]\n\n"))
-
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.Write(session.Conn, searchRoom.Title + "\n")
+  Arg.Write(session.Conn, searchRoom.Desc + "\n\n")
+  Arg.Write(session.Conn, Colors.Yellow("Users: " + users + "\n"))
+  Arg.WriteFull(session.Conn, "Items: " + items + "\n")
 }
 
 func LookCommandHandler(cmd []string, session *Game.Session) {
   // Make sure user is logged in
   if !session.Authed {
-    session.Conn.Write([]byte("You see nothing. You have to be logged in to look around. Type 'help login' or 'help register'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You see nothing. You have to be logged in to look around. Type 'help login' or 'help register'.\n")
 
     return
   }

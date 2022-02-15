@@ -8,6 +8,7 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/models"
   "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/arg"
 )
 
 type LoginCommand struct {
@@ -34,17 +35,15 @@ func NewLoginCommand() CommandType {
 
 func LoginCommandHandler(cmd []string, session *Game.Session) {
   if session.Authed {
-    session.Conn.Write([]byte("You can't do this while you're logged in.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You can't do this while you're logged in.\n")
     return
   }
 
   // Validate length of command
   if len(cmd) != 3 {
     fmt.Println("[LOGIN FAILURE (INVALID COMMAND)]", session.IP)
-    session.Conn.Write([]byte("Error! Be sure to use the following syntax...\n"))
-    session.Conn.Write([]byte("login <username> <password>\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.Write(session.Conn, "Error! Be sure to use the following syntax...\n")
+    Arg.WriteFull(session.Conn, "login <username> <password>\n")
     return
   }
 
@@ -61,9 +60,8 @@ func LoginCommandHandler(cmd []string, session *Game.Session) {
   if err != nil {
     fmt.Printf("[LOGIN FAILURE (VALIDATION ERROR FOR '%s')] %s\n", cmd[1], session.IP)
     fmt.Println("[LOGIN FAILURE (VALIDATION ERROR)]", session.IP)
-    session.Conn.Write([]byte("Error! Be sure to use the following syntax...\n"))
-    session.Conn.Write([]byte("login <username> <password>\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.Write(session.Conn, "Error! Be sure to use the following syntax...\n")
+    Arg.WriteFull(session.Conn, "login <username> <password>\n")
     return
   }
 
@@ -73,8 +71,7 @@ func LoginCommandHandler(cmd []string, session *Game.Session) {
 
   if result.RowsAffected == 0 {
     // Let user and server know login was successful
-    session.Conn.Write([]byte("I'm sorry, no user exists with that username.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "I'm sorry, no user exists with that username.\n")
 
     fmt.Printf("[LOGIN FAILURE (USERNAME '%s' NOT FOUND)] %s\n", cmd[1], session.IP)
 
@@ -84,9 +81,8 @@ func LoginCommandHandler(cmd []string, session *Game.Session) {
   // Validate Password
   valid := Model.ValidatePassword(cmd[2], searchUser.Password)
 
-  if valid == false {
-    session.Conn.Write([]byte("That password is incorrect.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+  if !valid {
+    Arg.WriteFull(session.Conn, "That password is incorrect.\n")
 
     fmt.Printf("[LOGIN FAILURE (INCORRECT PASSWORD FOR '%s')] %s\n", cmd[1], session.IP)
 
@@ -94,8 +90,7 @@ func LoginCommandHandler(cmd []string, session *Game.Session) {
   }
 
   // Let user and server know login was successful
-  session.Conn.Write([]byte("You've logged in! Welcome to Tenland. Begin by typing 'look'...\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "You've logged in! Welcome to Tenland. Begin by typing 'look'...\n")
 
   session.Authed = true
   session.User = searchUser

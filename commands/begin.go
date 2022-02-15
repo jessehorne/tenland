@@ -3,11 +3,11 @@ package Command
 import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func BeginCommandHandler(cmd []string, session *Game.Session) {
-  session.Conn.Write([]byte(Data.Begin))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, Data.Begin)
 }
 
 func NewBeginCommand() CommandType {

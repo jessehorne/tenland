@@ -8,6 +8,7 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/models"
   "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/arg"
 )
 
 type RegisterCommand struct {
@@ -34,17 +35,15 @@ func NewRegisterCommand() CommandType {
 
 func RegisterCommandHandler(cmd []string, session *Game.Session) {
   if session.Authed {
-    session.Conn.Write([]byte("You can't do this while you're logged in.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You can't do this while you're logged in.\n")
     return
   }
 
   // Validate length of command
   if len(cmd) != 3 {
     fmt.Println("[REGISTER FAILURE (INVALID COMMAND)]", session.IP)
-    session.Conn.Write([]byte("Error! Use the following syntax...\n"))
-    session.Conn.Write([]byte("register <username> <password>\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.Write(session.Conn, "Error! Use the following syntax...\n")
+    Arg.WriteFull(session.Conn, "register <username> <password>\n")
     return
   }
 
@@ -60,10 +59,9 @@ func RegisterCommandHandler(cmd []string, session *Game.Session) {
 
   if err != nil {
     fmt.Println("[REGISTER FAILURE (VALIDATION ERROR)]", session.IP)
-    session.Conn.Write([]byte("Error! Use the following syntax...\n"))
-    session.Conn.Write([]byte("/register <username> <password>\n"))
-    session.Conn.Write([]byte("Your username must be unique and your password must be at least 8 characters.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.Write(session.Conn, "Error! Use the following syntax...\n")
+    Arg.Write(session.Conn, "/register <username> <password>\n")
+    Arg.WriteFull(session.Conn, "Your username must be unique and your password must be at least 8 characters.\n")
     return
   }
 
@@ -73,16 +71,14 @@ func RegisterCommandHandler(cmd []string, session *Game.Session) {
   if userCreationError != nil {
     fmt.Println("[REGISTER FAILURE (CREATION ERROR)]", session.IP)
 
-    session.Conn.Write([]byte("I'm sorry, something went wrong.\n"))
-    session.Conn.Write([]byte(userCreationError.Error()))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.Write(session.Conn, "I'm sorry, something went wrong.\n")
+    Arg.WriteFull(session.Conn, userCreationError.Error())
 
     return
   }
 
   // Let user and server know registration was successful
-  session.Conn.Write([]byte("You've registered. Now do 'login <username> <password>'!\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "You've registered. Now do 'login <username> <password>'!\n")
 
   fmt.Println("[REGISTER SUCCESS]", session.IP)
 }

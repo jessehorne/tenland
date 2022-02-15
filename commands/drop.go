@@ -4,6 +4,7 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func DropCommandHandler(cmd []string, session *Game.Session) {
@@ -20,15 +21,13 @@ func DropCommandHandler(cmd []string, session *Game.Session) {
 
   // Handle if room doesn't exist in database
   if result.RowsAffected == 0 {
-    session.Conn.Write([]byte("You can't drop an item into the abyss.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You can't drop an item into the abyss.\n")
     return
   }
 
   // Make sure argument is provided
   if len(cmd) < 2 {
-    session.Conn.Write([]byte("You have to specify what you want to drop.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You have to specify what you want to drop.\n")
     return
   }
 
@@ -46,15 +45,13 @@ func DropCommandHandler(cmd []string, session *Game.Session) {
       session.User.CurrentWeight -= v.Weight
       Data.DB.Save(&session.User)
 
-      session.Conn.Write([]byte("You've dropped " + v.Name + ".\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You've dropped " + v.Name + ".\n")
 
       return
     }
   }
 
-  session.Conn.Write([]byte("You can't drop something that doesn't exist. Or can you?\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "You can't drop something that doesn't exist. Or can you?\n")
 }
 
 func NewDropCommand() CommandType {

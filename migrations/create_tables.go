@@ -22,8 +22,28 @@ func main() {
   Data.InitDB()
 
   // Migrate
-  Data.DB.AutoMigrate(&Model.User{})
-  Data.DB.AutoMigrate(&Model.Room{})
-  Data.DB.AutoMigrate(&Model.Config{})
-  Data.DB.AutoMigrate(&Model.Item{})
+
+  userTableError := Data.DB.AutoMigrate(&Model.User{})
+
+  if userTableError != nil {
+    fmt.Println("Error migrating users table.")
+  }
+
+  roomTableError := Data.DB.AutoMigrate(&Model.Room{})
+
+  if roomTableError != nil {
+    fmt.Println("Error migrating rooms table.")
+  }
+
+  configTableError := Data.DB.AutoMigrate(&Model.Config{})
+
+  if configTableError != nil {
+    fmt.Println("Error migrating configs table.")
+  }
+
+  itemTableError := Data.DB.AutoMigrate(&Model.Item{})
+
+  if itemTableError != nil {
+    fmt.Println("Error migrating items table.")
+  }
 }

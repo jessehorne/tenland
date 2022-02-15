@@ -3,16 +3,15 @@ package Command
 import (
   "strconv"
 
-  "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/colors"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func WorthCommandHandler(cmd []string, session *Game.Session) {
   // Verify that user is logged in
   if !session.Authed {
-    session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "You can't do this unless you're logged in.\n")
     return
   }
 
@@ -20,8 +19,7 @@ func WorthCommandHandler(cmd []string, session *Game.Session) {
   Colors.Cyan("[Bank] ") + Colors.Yellow(strconv.Itoa(session.User.GoldBank)) + "\n" +
   Colors.Cyan("[Hand] ") + Colors.Yellow(strconv.Itoa(session.User.GoldHand)) + "\n"
 
-  session.Conn.Write([]byte(message))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, message)
 }
 
 func NewWorthCommand() CommandType {

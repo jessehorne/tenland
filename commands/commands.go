@@ -2,12 +2,12 @@ package Command
 
 import (
   "strconv"
-  "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func CommandsCommandHandler(cmd []string, session *Game.Session) {
-  session.Conn.Write([]byte("[Commands]\n"))
+  Arg.Write(session.Conn, "[Commands]\n")
 
   for i := 0; i < len(CommandsHelp); i++ {
     msg := strconv.Itoa(i+1) + ". " + CommandsHelp[i]
@@ -25,11 +25,11 @@ func CommandsCommandHandler(cmd []string, session *Game.Session) {
 
     msg = msg + AllCommands[CommandsHelp[i]] + "\n"
 
-    session.Conn.Write([]byte(msg))
+    Arg.Write(session.Conn, msg)
   }
 
   // Send cursor
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.Cursor(session.Conn)
 }
 
 func NewCommandsCommand() CommandType {

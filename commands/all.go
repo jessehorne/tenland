@@ -37,7 +37,7 @@ type CommandType struct {
 
 func GetClosestMatch(search string) string {
   // loop through all full-length commands
-  for key, _ := range Run {
+  for key := range Run {
     // Check if length of search is smaller than or equal to length of key
     // We do this because if a user types something longer than the command,
     // automatically know that it isn't it.

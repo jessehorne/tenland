@@ -2,14 +2,13 @@ package Command
 
 import (
   "fmt"
-  "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func CoordsCommandHandler(cmd []string, session *Game.Session) {
   output := fmt.Sprintf("Coordinates (X, Y): (%d, %d)\n", session.User.X, session.User.Y)
-  session.Conn.Write([]byte(output))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, output)
 }
 
 func NewCoordsCommand() CommandType {

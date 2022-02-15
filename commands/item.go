@@ -8,12 +8,12 @@ import (
   "github.com/jessehorne/tenland/data"
   "github.com/jessehorne/tenland/game"
   "github.com/jessehorne/tenland/models"
+  "github.com/jessehorne/tenland/arg"
 )
 
 func WeightItem(cmd []string, session *Game.Session) {
   if len(cmd) < 4 {
-    session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help item'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. Incorrect number of arguments. Please type 'help item'.\n")
     return
   }
 
@@ -21,27 +21,23 @@ func WeightItem(cmd []string, session *Game.Session) {
   weight, err := strconv.ParseFloat(cmd[3], 32)
 
   if err != nil {
-    session.Conn.Write([]byte("Invalid. Incorrect weight value. Please type 'help item'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. Incorrect weight value. Please type 'help item'.\n")
     return
   }
 
   success := Model.ItemUpdateWeight(Data.DB, uint(itemID), float32(weight))
 
   if !success {
-    session.Conn.Write([]byte("Invalid. Could not update item weight in the database. Please type 'help item'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. Could not update item weight in the database. Please type 'help item'.\n")
     return
   }
 
-  session.Conn.Write([]byte("You've updated an items weight!\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "You've updated an items weight!\n")
 }
 
 func DescribeItem(cmd []string, session *Game.Session) {
   if len(cmd) < 4 {
-    session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help item'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. Incorrect number of arguments. Please type 'help item'.\n")
     return
   }
 
@@ -51,19 +47,16 @@ func DescribeItem(cmd []string, session *Game.Session) {
   success := Model.ItemUpdateDescription(Data.DB, uint(itemID), description)
 
   if !success {
-    session.Conn.Write([]byte("Invalid. Could not update item description in the database. Please type 'help item'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. Could not update item description in the database. Please type 'help item'.\n")
     return
   }
 
-  session.Conn.Write([]byte("You've updated an items description!\n"))
-  session.Conn.Write([]byte(Data.Cursor))
+  Arg.WriteFull(session.Conn, "You've updated an items description!\n")
 }
 
 func CreateItem(cmd []string, session *Game.Session) {
   if len(cmd) < 6 {
-    session.Conn.Write([]byte("Invalid. Incorrect number of arguments. Please type 'help item'.\n"))
-    session.Conn.Write([]byte(Data.Cursor))
+    Arg.WriteFull(session.Conn, "Invalid. Incorrect number of arguments. Please type 'help item'.\n")
     return
   }
 
@@ -78,8 +71,7 @@ func CreateItem(cmd []string, session *Game.Session) {
   if cmd[4] == "true" {
     // Validate that cmd is at least 6 in length
     if len(cmd) < 7 {
-      session.Conn.Write([]byte("Invalid. You have to specify a User ID. Please type 'help item'.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "Invalid. You have to specify a User ID. Please type 'help item'.\n")
       return
     }
 
@@ -94,28 +86,24 @@ func CreateItem(cmd []string, session *Game.Session) {
     newItem, err := Model.ItemNew(Data.DB, name, x, y, held, uint(userID))
 
     if err != nil {
-      session.Conn.Write([]byte("There was an error..."))
-      session.Conn.Write([]byte(err.Error()))
-      session.Conn.Write([]byte("\n" + Data.Cursor))
+      Arg.Write(session.Conn, "There was an error...\n")
+      Arg.WriteFull(session.Conn, err.Error())
       return
     }
 
-    session.Conn.Write([]byte(fmt.Sprintf("Created item named '%s'!", newItem.Name)))
-    session.Conn.Write([]byte("\n" + Data.Cursor))
+    Arg.WriteFull(session.Conn, fmt.Sprintf("Created item named '%s'!\n", newItem.Name))
   } else {
     // If not creating item in inventory, create it on the ground but set user
     // id to the current logged in user so can know who created the item
     newItem, err := Model.ItemNew(Data.DB, name, x, y, held, session.User.ID)
 
     if err != nil {
-      session.Conn.Write([]byte("There was an error..."))
-      session.Conn.Write([]byte(err.Error()))
-      session.Conn.Write([]byte("\n" + Data.Cursor))
+      Arg.Write(session.Conn, "There was an error...\n")
+      Arg.WriteFull(session.Conn, err.Error())
       return
     }
 
-    session.Conn.Write([]byte(fmt.Sprintf("Created item named '%s'!", newItem.Name)))
-    session.Conn.Write([]byte("\n" + Data.Cursor))
+    Arg.WriteFull(session.Conn, fmt.Sprintf("Created item named '%s'!\n", newItem.Name))
   }
 }
 
@@ -123,22 +111,19 @@ func ItemCommandHandler(cmd []string, session *Game.Session) {
   // Auth
     // Verify that user is logged in
     if !session.Authed {
-      session.Conn.Write([]byte("You can't do this unless you're logged in.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You can't do this unless you're logged in.\n")
       return
     }
 
     // Verify that user is a builder
     if !session.User.IsBuilder {
-      session.Conn.Write([]byte("You're not a builder!\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You're not a builder!\n")
       return
     }
 
     // Verify that there is at least one arg to specify the command
     if len(cmd) < 2 {
-      session.Conn.Write([]byte("You need to supply a command to 'item'. Please type 'help item'.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "You need to supply a command to 'item'. Please type 'help item'.\n")
       return
     }
 
@@ -152,8 +137,7 @@ func ItemCommandHandler(cmd []string, session *Game.Session) {
     } else if command == "weight" {
       WeightItem(cmd, session)
     } else {
-      session.Conn.Write([]byte("Invalid command supplied to 'item'. Please type 'help item'.\n"))
-      session.Conn.Write([]byte(Data.Cursor))
+      Arg.WriteFull(session.Conn, "Invalid command supplied to 'item'. Please type 'help item'.\n")
     }
 
   // end of command
