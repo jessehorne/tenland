@@ -134,11 +134,11 @@ func LookCommandHandler(cmd []string, session *Game.Session) {
 }
 
 func NewLookCommand() CommandType {
-  c := NewCommand("look", "'look' - Get visual and auditory information on current room.")
+  c := NewCommand("look", "'look' - Get information on current room.")
   c.Handler = LookCommandHandler
   AllCommandsBig["look"] =
   "Usage: 'look'\n" +
-  "Gives you a detailed description of the area you're current standing in.\n"
+  "Gives you a detailed description of the area you're currently standing in.\n"
 
   CommandsHelp[len(CommandsHelp)] = "look"
 
